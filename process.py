@@ -11,7 +11,11 @@ def sparse(path: str, cut_proportion = 2):
     # these come as floats for some reason
     # note: we want to round up, not round or truncate
     # that's weird to me, but you get an off-by-one error with n = 3 if this is `int(frame_count // cut_proportion), and same with n = 10 and `round(frame_count / cut_proportion)`
-    keep_count = int(frame_count // cut_proportion + 1)
+    keep_count = None
+    if frame_count % cut_proportion == 0:
+        keep_count = int(frame_count // cut_proportion)
+    else:
+        keep_count = int(frame_count // cut_proportion + 1)
     # print(frame_count, int(frame_count // cut_proportion), frame_count / cut_proportion, keep_count)
     width = int(width)
     height = int(height)
@@ -45,13 +49,13 @@ if __name__ == '__main__':
     demo = '.\\media\\vid1_WIN_20230310_14_20_03_Pro.mp4'
 
     sparse_vid, kept = sparse(demo)
-    print("every 2", sparse_vid.shape, kept)
+    print("every 2", sparse_vid.shape, kept, len(kept))
 
     sparse_vid, kept = sparse(demo, 3)
-    print("every 3", sparse_vid.shape, kept)
+    print("every 3", sparse_vid.shape, kept, len(kept))
 
     sparse_vid, kept = sparse(demo, 10)
-    print("every 10", sparse_vid.shape, kept)
+    print("every 10", sparse_vid.shape, kept, len(kept))
 
 
 
