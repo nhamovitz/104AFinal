@@ -1,3 +1,6 @@
+
+
+
 import cv2
 import numpy as np
 
@@ -41,9 +44,22 @@ def sparse(path: str, cut_proportion = 2):
             break
 
         frame_number += 1
-    
-        
+
     return sparse_vid, kept_frames
+
+def run_demo():
+    demo = '.\\media\\vid1_WIN_20230310_14_20_03_Pro.mp4'
+
+    sparse_vid, kept = sparse(demo)
+    print("every 2", sparse_vid.shape, kept, len(kept))
+
+    sparse_vid, kept = sparse(demo, 3)
+    print("every 3", sparse_vid.shape, kept, len(kept))
+
+    sparse_vid, kept = sparse(demo, 10)
+    print("every 10", sparse_vid.shape, kept, len(kept))
+
+    return sparse_vid, kept
 
 if __name__ == '__main__':
     demo = '.\\media\\vid1_WIN_20230310_14_20_03_Pro.mp4'
@@ -56,6 +72,7 @@ if __name__ == '__main__':
 
     sparse_vid, kept = sparse(demo, 10)
     print("every 10", sparse_vid.shape, kept, len(kept))
+
 
 
 
