@@ -1,12 +1,14 @@
 import cv2
 import numpy as np
 
+
 def sparse(path: str, cut_proportion = 2):
     cap = cv2.VideoCapture(path)
 
     frame_count = cap.get(cv2.CAP_PROP_FRAME_COUNT)
     width = cap.get(cv2.CAP_PROP_FRAME_WIDTH)
     height = cap.get(cv2.CAP_PROP_FRAME_HEIGHT)
+    frame_rate = cap.get(cv2.CAP_PROP_FPS)
 
     # these come as floats for some reason
     # note: we want to round up, not round or truncate
@@ -43,18 +45,36 @@ def sparse(path: str, cut_proportion = 2):
         frame_number += 1
     
         
-    return sparse_vid, kept_frames
+    return sparse_vid, kept_frames, frame_rate
+
+def create_video(frames: np.ndarray, name: str, fps):
+    height, width = frames.shape[1, 2]
+
+    codec = cv2.VideoWriter_fourcc(*"MJPG") # maybe smth different?
+    writer = cv2.VideoWriter(name, codec, fps, (height, width))
+
+    for frame in frames:
+        writer.write(frame)
+
+    writer.release()
+
+
+
+
+
+
+
 
 if __name__ == '__main__':
     demo = '.\\media\\vid1_WIN_20230310_14_20_03_Pro.mp4'
 
-    sparse_vid, kept = sparse(demo)
+    sparse_vid, kept, _ = sparse(demo)
     print("every 2", sparse_vid.shape, kept, len(kept))
 
-    sparse_vid, kept = sparse(demo, 3)
+    sparse_vid, kept, _ = sparse(demo, 3)
     print("every 3", sparse_vid.shape, kept, len(kept))
 
-    sparse_vid, kept = sparse(demo, 10)
+    sparse_vid, kept, _ = sparse(demo, 10)
     print("every 10", sparse_vid.shape, kept, len(kept))
 
 
