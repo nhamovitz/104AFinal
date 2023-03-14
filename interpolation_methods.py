@@ -26,17 +26,16 @@ def spline_interpolation(x_vals, n, xi_vec, fi_vec):
     Use spline interpolation to find the f_vector
     """
     # set up return vector
-    f_vec = [ 0 for _ in len(x_vals)]
+    f_vec = [ 0 for _ in x_vals]
     # find coefficients of spline
-    a, b, c, d = natural_cubic_spline(n, xi_vec, fi_vec)
+    a, b, c, d = natural_cubic_spline(len(xi_vec) - 1, xi_vec, fi_vec)
     # start iterating through x_vals at j = 0
     j = 0
     # iterate through every spline
-    for i in range(n):
+    for i in range(len(xi_vec) - 1):
         xi = xi_vec[i]
-        a[i], b[i], c[i], d[i] = round(a[i], 8), round(b[i], 8), round(c[i], 8), round(d[i], 8)
         # take x_vals until not in range anymore (lower bound OK from previous iteration)
-        while x_vals[j] < xi_vec[j+1]:
+        while x_vals[j] < xi_vec[i+1]:
             x = x_vals[j]
             f_vec[j] = a[i] + b[i]*(x - xi) + c[i]*(x - xi)**2 + d[i]*(x-xi)**3
             j += 1

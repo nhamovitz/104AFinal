@@ -56,7 +56,7 @@ def run_demo():
     sparse_vid, kept = sparse(demo, 3)
     print("every 3", sparse_vid.shape, kept, len(kept))
 
-    sparse_vid, kept = sparse(demo, 10)
+    sparse_vid, kept = sparse(demo, 20)
     print("every 10", sparse_vid.shape, kept, len(kept))
 
     return sparse_vid, kept

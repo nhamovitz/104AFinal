@@ -1,7 +1,7 @@
 from process import sparse
 from process import run_demo
 from interpolation_methods import spline_interpolation
-
+import numpy as np
 
 def process_sparse_frames(sparse_vid):
     """
@@ -14,17 +14,21 @@ def process_sparse_frames(sparse_vid):
         all_pixel data: records the r,g, and b values for every pixel. record these values as lists to 
         represent changes across frames
     """
+    print("Sparse Video", sparse_vid)
     all_pixel_data = [ [ [ [],[],[] ] for pixel in row] for row in sparse_vid[0]]
+    all_pixel_data = np.zeros((len(sparse_vid[0]), len(sparse_vid[0][0]), 3, len(sparse_vid)))
 
     # Structure a list of all the rgb for a pixel in order
+    print("Dimensions of sparse video:", len(sparse_vid), len(sparse_vid[0]), len(sparse_vid[0,0]))
     for fr in range(len(sparse_vid)):
         frame = sparse_vid[fr]
         for r in range(len(frame)):
             row = frame[r]
             for p in range(len(row)):
-                all_pixel_data[r][p][0].append(row[0])
-                all_pixel_data[r][p][1].append(row[1])
-                all_pixel_data[r][p][2].append(row[2])
+                pixel = row[p]
+                all_pixel_data[r,p,0,fr] = pixel[0]
+                all_pixel_data[r,p,1,fr] = pixel[1]
+                all_pixel_data[r,p,2,fr] = pixel[2]
 
     return all_pixel_data
 
@@ -39,22 +43,24 @@ def interpolation_frames(all_pixel_data, kept, n):
     n: number of total frames we want
     """
     # make array for all frame numbers
-    x_vals = [i for i in range(n)]
+    x_vals = [int(i*(kept[1] - kept[0])/(n+1)) for i in range(n*len(kept))]
     # construct video with splines
-    spline_vid = new_vid(n, all_pixel_data)
-    all_spline_data = [ [ [] for pixel in row ] for row in all_pixel_data]
+    print("Make empty new video")
+    spline_video = new_vid(n, all_pixel_data)
+    # all_spline_data = [ [ [] for pixel in row ] for row in all_pixel_data]
+    all_spline_data = np.zeros((len(all_pixel_data), len(all_pixel_data[0])))
+    print("Perform Interpolations")
     for r in range(len(all_spline_data)):
         for p in range(len(all_spline_data[0])):
-            r_vec = spline_interpolation(x_vals, n, xi_vec = kept, fi_vec = all_pixel_data[r][p][0])
-            g_vec = spline_interpolation(x_vals, n, xi_vec = kept, fi_vec = all_pixel_data[r][p][0])
-            b_vec = spline_interpolation(x_vals, n, xi_vec = kept, fi_vec = all_pixel_data[r][p][0])
+            r_vec = spline_interpolation(x_vals, n, xi_vec = kept, fi_vec = all_pixel_data[r,p,0])
+            g_vec = spline_interpolation(x_vals, n, xi_vec = kept, fi_vec = all_pixel_data[r,p,1])
+            b_vec = spline_interpolation(x_vals, n, xi_vec = kept, fi_vec = all_pixel_data[r,p,2])
             for f in range(n):
-                spline_vid[f][r][p] = [r_vec[f], g_vec[f], b_vec[f] ]
-    return spline_vid
+                spline_video[f,r,p] = [r_vec[f], g_vec[f], b_vec[f] ]
+    return spline_video
 
 def new_vid(n, frame):
-    return [ [ [ [] for pixel in row] for row in frame] for f in range(n)]
-
+    return np.zeros((n, len(frame), len(frame[0]),3))
 
 def interpolate_pixel_data(pixel_data, kept, x_vec):
     # Do spline processing
@@ -93,8 +99,7 @@ def extra_funct(sparse_vid):
 if __name__ == '__main__':
     sparse_vid, kept = run_demo()
     all_pix_data = process_sparse_frames(sparse_vid)
-    print(all_pix_data)
+    print("All Pixel Data", all_pix_data)
     spline_vid = interpolation_frames(all_pix_data, kept, n = 3 * len(sparse_vid))
-
-
+    print(spline_vid)
 
