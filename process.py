@@ -43,9 +43,9 @@ def sparse(path: str, cut_proportion = 2):
             break
 
         frame_number += 1
-    
-        
+
     return sparse_vid, kept_frames, frame_rate
+
 
 def video_with_codec(codec, extension):
     height, width = 720, 1280
@@ -70,7 +70,8 @@ def create_video(frames: np.ndarray, name: str, fps: float):
 
     writer.release()
 
-if __name__ == '__main__':
+
+def run_demo():
     demo = '.\\media\\vid1_WIN_20230310_14_20_03_Pro.mp4'
 
     # sparse_vid, kept, _ = sparse(demo)
@@ -95,8 +96,12 @@ if __name__ == '__main__':
 
     video_with_codec('mpv4', 'mpg')
 
-    # create_video(redone_vid, '.\\media\\demo', 30.0)
+    sparse_vid, kept = sparse(demo, 20)
+    print("every 20", sparse_vid.shape, kept, len(kept))
 
+    return sparse_vid, kept
 
+if __name__ == '__main__':
+    run_demo()
 
 
