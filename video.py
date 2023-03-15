@@ -3,7 +3,7 @@ import numpy as np
 
 class Video:
     def __init__(self, frames):
-        assert len(frames.shape) == 4
+        # assert len(frames.shape) == 4
         self.frames = frames
 
     @classmethod
@@ -21,7 +21,8 @@ class Video:
 
         print(f"{frame_count=}, {width=}, {height=}, {frame_rate=}")
 
-        frames = np.zeros((frame_count, height, width, 3))
+        # frames = np.zeros((frame_count, height, width, 3))
+        frames = []
 
         i = 0
         while (cap.isOpened()):
@@ -29,10 +30,11 @@ class Video:
             if not ret: # Error handling kinda
                 print(f"Error reading frame of video {path}")
 
-            frames[i, :, :, :] = frame
+            # frames[i, :, :, :] = frame
+            frames.append(frame)
 
-            print(type(frame))
-            print(frame.shape)
+            # print(type(frame))
+            # print(frame.shape)
             cv2.imshow("test", frame)           
             if cv2.waitKey(28) & 0xFF == ord('q'):
                 break
@@ -60,8 +62,8 @@ class Video:
         frame_delay = int(1000 // self.frame_rate)
 
         for frame in self.frames:
-            print(type(frame))
-            print(frame.shape)
+            # print(type(frame))
+            # print(frame.shape)
             cv2.imshow(self.info, frame)
 
             if cv2.waitKey(frame_delay) & 0xFF == ord('q'):
