@@ -41,6 +41,18 @@ def spline_interpolation(x_vals, n, xi_vec, fi_vec):
             j += 1
     return f_vec
 
+def linear_interpolation(x_vals, n, xi_vec, fi_vec):
+    f_vec = [ 0 for _ in x_vals]
+    # f(x) = (f(x_1) - f(x_0))/(x_1-x_0) * x + f(x_0)
+    j = 0
+    for i in range(len(xi_vec) - 1):
+        x0, x1 = xi_vec[i], xi_vec[i+1]
+        while x_vals[j] < x1:
+            f_vec[j] = fi_vec[i] + x_vals[j]*(fi_vec[i+1] - fi_vec[i])/(x1-x0)
+            j += 1
+    f_vec[-1] = fi_vec[-1]
+    return f_vec
+
 
 def hermite_polynomial(x_vec, f_vec, fp_vec):
     n = len(x_vec) - 1
