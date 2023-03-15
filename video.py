@@ -60,9 +60,12 @@ class Video:
 
         return vid
 
-    def play_video(self):
+    def play_video(self, fast = False):
         # milliseconds
-        frame_delay = int(1000 // self.frame_rate)
+        if not fast:
+            frame_delay = int(1000 // self.frame_rate)
+        else:
+            frame_delay = int(1000 // (self.frame_rate * 2.5))
 
         for frame in self.frames:
             cv2.imshow(self.info, frame)
@@ -73,7 +76,7 @@ class Video:
 
     @classmethod
     def abs_error(cls, vid1, vid2):
-        return np.abs(vid1 - vid2)
+        return np.abs(vid1.frames - vid2.frames)
 
     @classmethod
     def rel_error(cls, vid1, vid2):
@@ -86,20 +89,21 @@ def analyze_against(vid: Video, func, description: str, play_variant = True):
     new_vid = Video(new_frames, metadata_from = vid)
     if description:
         if new_vid.info:
-            new_vid.info += description
+            new_vid.info += ", " + description
         else:
             new_vid.info = description
 
     if play_variant:
-        new_vid.play_video()
+        new_vid.play_video(fast=True)
 
     print(f"Error analysis for variant {description}.")
-    print(f"Mean absolute error: {np.mean(Video.abs_error(vid, new_vid))}")
-    rel_error = Video.rel_error(vid, new_vid)
-    print(f"Mean relative error: {np.mean(rel_error)}")
+    abs_error = Video.abs_error(vid, new_vid)
+    print(f"Mean absolute error: {np.mean(abs_error)}")
+    print(f"Mean relative error: {np.mean(Video.rel_error(vid, new_vid))}")
     if play_variant:
-        rel_error = Video(rel_error)
-        rel_error.play_video
+        rel_error = Video(abs_error, metadata_from = new_vid)
+        rel_error.info += ", abs error"
+        rel_error.play_video()
 
 
 
@@ -124,28 +128,7 @@ if __name__ == '__main__':
     analyze_against(vid, flip_on(1), "upside_down")
     analyze_against(vid, flip_on(2), "sideways")
     analyze_against(vid, lambda frames: np.roll(frames, 1, 3).copy(), "colors")
-
-    reverse = flip_on(frames, 0)
-    upside_down = flip_on(frames, 1)
-    sideways = flip_on(frames, 2)
-    colors = flip_on(frames, 3)
-
-    reverse = Video(reverse, vid)
-    upside_down = Video(upside_down, vid)
-    sideways = Video(sideways, vid)
-    colors = Video(colors, vid)
-
-    reverse.play_video()
-    upside_down.play_video()
-    sideways.play_video()
-    colors.play_video()
-
-    print("Error analysis (absolute only)")
-    print(f"Reverse: {np.mean(Video.abs_error(vid, reverse))}")
-    print(f"upside_down: {np.mean(Video.abs_error(vid, upside_down))}")
-    print(f"sideways: {np.mean(Video.abs_error(vid, sideways))}")
-    print(f"upside_down: {np.mean(Video.abs_error(vid, upside_down))}")
-
+    analyze_against(vid, lambda frames: np.zeros_like(frames), "black")
 
         
         
