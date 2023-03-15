@@ -47,35 +47,55 @@ def sparse(path: str, cut_proportion = 2):
         
     return sparse_vid, kept_frames, frame_rate
 
-def create_video(frames: np.ndarray, name: str, fps):
-    height, width = frames.shape[1, 2]
-
-    codec = cv2.VideoWriter_fourcc(*"MJPG") # maybe smth different?
-    writer = cv2.VideoWriter(name, codec, fps, (height, width))
-
-    for frame in frames:
-        writer.write(frame)
-
+def video_with_codec(codec, extension):
+    height, width = 720, 1280
+    fourcc = cv2.VideoWriter_fourcc(*codec)
+    writer = cv2.VideoWriter(f".\\media\\test\\{codec}_{extension}.{extension}", fourcc, 30, (height, width))
+    for _ in range(150):
+        blank_frame = np.zeros((height, width))
+        writer.write(blank_frame)
     writer.release()
 
 
 
+def create_video(frames: np.ndarray, name: str, fps: float):
+    _, height, width, _ = frames.shape
 
+    codec = cv2.VideoWriter_fourcc(*'XVID') # maybe smth different?
+    writer = cv2.VideoWriter(name + '.avi', codec, fps, (height, width))
 
+    for frame in frames:
+        blank_frame = np.zeros_like(frame)
+        writer.write(blank_frame)
 
-
+    writer.release()
 
 if __name__ == '__main__':
     demo = '.\\media\\vid1_WIN_20230310_14_20_03_Pro.mp4'
 
-    sparse_vid, kept, _ = sparse(demo)
-    print("every 2", sparse_vid.shape, kept, len(kept))
+    # sparse_vid, kept, _ = sparse(demo)
+    # print("every 2", sparse_vid.shape, kept, len(kept))
 
-    sparse_vid, kept, _ = sparse(demo, 3)
-    print("every 3", sparse_vid.shape, kept, len(kept))
+    # sparse_vid, kept, _ = sparse(demo, 3)
+    # print("every 3", sparse_vid.shape, kept, len(kept))
 
-    sparse_vid, kept, _ = sparse(demo, 10)
-    print("every 10", sparse_vid.shape, kept, len(kept))
+    # sparse_vid, kept, _ = sparse(demo, 10)
+    # print("every 10", sparse_vid.shape, kept, len(kept))
+
+    # redone_vid, _, _ = sparse(demo, 1)
+
+    # print(redone_vid.shape)
+
+    # for codec in ('DIVX', 'XVID', 'MJPG', 'X264', 'WMV1', 'WMV2', 'MP4V', 'MPEG', 'H264', 'mp4v', 'mpv4'):
+    #     for ext in ('mp4', 'avi', 'mpg'):
+    #         try:
+    #             video_with_codec(codec, ext)
+    #         except Exception as e:
+    #             print(f"{codec=}, {ext=}, {e=}")
+
+    video_with_codec('mpv4', 'mpg')
+
+    # create_video(redone_vid, '.\\media\\demo', 30.0)
 
 
 
