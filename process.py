@@ -45,7 +45,32 @@ def sparse(path: str, cut_proportion = 2):
 
         frame_number += 1
 
-    return sparse_vid, kept_frames
+    return sparse_vid, kept_frames, frame_rate
+
+
+def write_black_with_codec(codec, extension):
+    height, width = 720, 1280
+    fourcc = cv2.VideoWriter_fourcc(*codec)
+    writer = cv2.VideoWriter(f".\\media\\test\\{codec}_{extension}.{extension}", fourcc, 30, (height, width))
+    for _ in range(150):
+        blank_frame = np.zeros((height, width))
+        writer.write(blank_frame)
+    writer.release()
+
+
+
+def write_video(frames: np.ndarray, name: str, fps: float):
+    _, height, width, _ = frames.shape
+
+    codec = cv2.VideoWriter_fourcc(*'XVID') # maybe smth different?
+    writer = cv2.VideoWriter(name + '.avi', codec, fps, (height, width))
+
+    for frame in frames:
+        blank_frame = np.zeros_like(frame)
+        writer.write(blank_frame)
+
+    writer.release()
+
 
 def run_demo():
     demo = '.\\media\\vid1_WIN_20230310_14_20_03_Pro.mp4'
@@ -53,25 +78,32 @@ def run_demo():
     sparse_vid, kept = sparse(demo)
     print("every 2", sparse_vid.shape, kept, len(kept))
 
-    sparse_vid, kept = sparse(demo, 3)
-    print("every 3", sparse_vid.shape, kept, len(kept))
+    # sparse_vid, kept, _ = sparse(demo, 3)
+    # print("every 3", sparse_vid.shape, kept, len(kept))
 
-    sparse_vid, kept = sparse(demo, 20)
+    # sparse_vid, kept, _ = sparse(demo, 10)
+    # print("every 10", sparse_vid.shape, kept, len(kept))
+
+    # redone_vid, _, _ = sparse(demo, 1)
+
+    # print(redone_vid.shape)
+
+    # for codec in ('DIVX', 'XVID', 'MJPG', 'X264', 'WMV1', 'WMV2', 'MP4V', 'MPEG', 'H264', 'mp4v', 'mpv4'):
+    #     for ext in ('mp4', 'avi', 'mpg'):
+    #         try:
+    #             video_with_codec(codec, ext)
+    #         except Exception as e:
+    #             print(f"{codec=}, {ext=}, {e=}")
+
+    write_black_with_codec('mpv4', 'mpg')
+
+    sparse_vid, kept, frame_rate = sparse(demo, 20)
     print("every 20", sparse_vid.shape, kept, len(kept))
 
     return sparse_vid, kept
 
 if __name__ == '__main__':
-    demo = '.\\media\\vid1_WIN_20230310_14_20_03_Pro.mp4'
-
-    sparse_vid, kept = sparse(demo)
-    print("every 2", sparse_vid.shape, kept, len(kept))
-
-    sparse_vid, kept = sparse(demo, 3)
-    print("every 3", sparse_vid.shape, kept, len(kept))
-
-    sparse_vid, kept = sparse(demo, 10)
-    print("every 10", sparse_vid.shape, kept, len(kept))
+    run_demo()
 
 
 
