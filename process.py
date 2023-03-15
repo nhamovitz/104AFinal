@@ -47,7 +47,7 @@ def sparse(path: str, cut_proportion = 2):
     return sparse_vid, kept_frames, frame_rate
 
 
-def video_with_codec(codec, extension):
+def write_black_with_codec(codec, extension):
     height, width = 720, 1280
     fourcc = cv2.VideoWriter_fourcc(*codec)
     writer = cv2.VideoWriter(f".\\media\\test\\{codec}_{extension}.{extension}", fourcc, 30, (height, width))
@@ -58,7 +58,7 @@ def video_with_codec(codec, extension):
 
 
 
-def create_video(frames: np.ndarray, name: str, fps: float):
+def write_video(frames: np.ndarray, name: str, fps: float):
     _, height, width, _ = frames.shape
 
     codec = cv2.VideoWriter_fourcc(*'XVID') # maybe smth different?
@@ -94,7 +94,7 @@ def run_demo():
     #         except Exception as e:
     #             print(f"{codec=}, {ext=}, {e=}")
 
-    video_with_codec('mpv4', 'mpg')
+    write_black_with_codec('mpv4', 'mpg')
 
     sparse_vid, kept = sparse(demo, 20)
     print("every 20", sparse_vid.shape, kept, len(kept))

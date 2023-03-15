@@ -1,8 +1,11 @@
 import cv2
+from pathlib import Path
 
 # print(dir(cv2))
 
-cap = cv2.VideoCapture('.\\media\\vid1_WIN_20230310_14_20_03_Pro.mp4')
+demo_path = Path('.') / 'media' / 'vid1_WIN_20230310_14_20_03_Pro.mp4'
+
+cap = cv2.VideoCapture(str(demo_path))
 
 length = cap.get(cv2.CAP_PROP_FRAME_COUNT)
 print(length)
