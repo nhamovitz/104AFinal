@@ -1,6 +1,8 @@
+
+
+
 import cv2
 import numpy as np
-
 
 def sparse(path: str, cut_proportion = 2):
     cap = cv2.VideoCapture(path)
@@ -74,8 +76,8 @@ def write_video(frames: np.ndarray, name: str, fps: float):
 def run_demo():
     demo = '.\\media\\vid1_WIN_20230310_14_20_03_Pro.mp4'
 
-    # sparse_vid, kept, _ = sparse(demo)
-    # print("every 2", sparse_vid.shape, kept, len(kept))
+    sparse_vid, kept = sparse(demo)
+    print("every 2", sparse_vid.shape, kept, len(kept))
 
     # sparse_vid, kept, _ = sparse(demo, 3)
     # print("every 3", sparse_vid.shape, kept, len(kept))
@@ -96,12 +98,11 @@ def run_demo():
 
     write_black_with_codec('mpv4', 'mpg')
 
-    sparse_vid, kept = sparse(demo, 20)
-    print("every 20", sparse_vid.shape, kept, len(kept))
+    sparse_vid, kept, frame_rate = sparse(demo, 40)
+    print("every 40", sparse_vid.shape, kept, len(kept))
 
     return sparse_vid, kept
 
 if __name__ == '__main__':
     run_demo()
-
 
