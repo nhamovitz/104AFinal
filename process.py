@@ -74,8 +74,9 @@ def write_video(frames: np.ndarray, name: str, fps: float):
 
 
 def run_demo():
-    demo = '.\\media\\sun.mp4'
-
+    from pathlib import Path
+    demo = Path('.') / 'media' / 'sun.mp4'
+    
     # sparse_vid, kept, _ = sparse(demo)
     # print("every 2", sparse_vid.shape, kept, len(kept))
 
