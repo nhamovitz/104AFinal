@@ -128,7 +128,7 @@ if __name__ == '__main__':
     print("Spline Video Dimensions: ", len(spline_vid), len(spline_vid[0]), len(spline_vid[0][0]))
     print(spline_vid)
 
-    write_wonky_file("20_3.npy", a = spline_vid)
+    write_wonky_file(".\\numpy_vids\\sun_mp4.npy", a = spline_vid)
 
 
     # print(sparse_vid, kept)
