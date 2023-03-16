@@ -37,7 +37,7 @@ def spline_interpolation(x_vals, n, xi_vec, fi_vec):
         # take x_vals until not in range anymore (lower bound OK from previous iteration)
         while x_vals[j] < xi_vec[i+1]:
             x = x_vals[j]
-            f_vec[j] = a[i] + b[i]*(x - xi) + c[i]*(x - xi)**2 + d[i]*(x-xi)**3
+            f_vec[j] = int(a[i] + b[i]*(x - xi) + c[i]*(x - xi)**2 + d[i]*(x-xi)**3)
             j += 1
     return f_vec
 
