@@ -122,6 +122,7 @@ def linear_frames(all_pixel_data, kept, n):
 
 if __name__ == '__main__':
     sparse_vid, kept = run_demo()
+    print("made sparse vid, kept:")
     # print("Sparse Video Dimensions: ", len(sparse_vid), len(sparse_vid[0]), len(sparse_vid[0][0]))
     # # write_wonky_file("compressed_video.npy", sparse_vid)
     all_pix_data = process_sparse_frames(sparse_vid)
@@ -133,12 +134,13 @@ if __name__ == '__main__':
 
     
 
-    print(sparse_vid, kept)
+    # print(sparse_vid, kept)
+    print(kept)
     n = 4
     # spline_vid = interpolation_frames(all_pix_data, kept, n = n)
-    linear_vid = linear_frames(all_pix_data, kept, n = n)
+    # linear_vid = linear_frames(all_pix_data, kept, n = n)
     print("Linear Fit Video Data")
     # print(spline_vi)
 
-    write_wonky_file(str(Path('.') / 'numpy_vids' / f"keys_linear_n={n}.npy"), linear_vid)
+    # write_wonky_file(str(Path('.') / 'numpy_vids' / f"keys_linear_n={n}.npy"), linear_vid)
 
