@@ -117,7 +117,7 @@ if __name__ == '__main__':
 
     demo_path = Path('.') / 'media' / 'sun.mp4'
     vid = Video.from_file(str(demo_path))
-    vid.play_video()
+    # vid.play_video()
 
 
     def flip_on(axis):
@@ -133,21 +133,34 @@ if __name__ == '__main__':
 
     from process import run_demo
     import video
+    import create_vids
 
 
     sparse, _ = run_demo()
+    # sparse = create_vids.simple()
     sparse = video.Video(sparse, "total interpolation")
     sparse.frame_rate = 1
-    print(sparse.frames[-1])
+    # print(sparse.frames[-1])
     sparse.play_video()
 
     import read_numpy_array_files
 
-    spline_on_demo = read_numpy_array_files.read_wonky_file(str(Path('.') / 'numpy_vids' / 'sun_mp4.npy'))
+    spline_on_demo = read_numpy_array_files.read_wonky_file(str(Path('.') / 'numpy_vids' / 'sun_mp4_new1.npy'))
 
     spline = video.Video(spline_on_demo, "spline interpolation")
-    spline.frame_rate = 1
-    print(spline.frames[-1])
+    spline.frame_rate = 5
+    # print(spline.frames[-1])
+
+    spline.play_video()
+
+
+
+
+    spline_on_demo = read_numpy_array_files.read_wonky_file(str(Path('.') / 'numpy_vids' / 'sun_mp4_new2_n=15.npy'))
+
+    spline = video.Video(spline_on_demo, "spline interpolation")
+    spline.frame_rate = 15
+    # print(spline.frames[-1])
 
     spline.play_video()
 
