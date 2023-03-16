@@ -145,21 +145,21 @@ if __name__ == '__main__':
 
     import read_numpy_array_files
 
-    spline_on_demo = read_numpy_array_files.read_wonky_file(str(Path('.') / 'numpy_vids' / 'sun_mp4_new1.npy'))
+    spline_on_demo = read_numpy_array_files.read_wonky_file(str(Path('.') / 'numpy_vids' / 'sun_mp4_n=30.npy'))
 
     spline = video.Video(spline_on_demo, "spline interpolation")
-    spline.frame_rate = 5
-    # print(spline.frames[-1])
+    spline.frame_rate = 60
+     #print(spline.frames[-1])
 
     spline.play_video()
 
 
 
 
-    spline_on_demo = read_numpy_array_files.read_wonky_file(str(Path('.') / 'numpy_vids' / 'sun_mp4_new2_n=15.npy'))
+    spline_on_demo = read_numpy_array_files.read_wonky_file(str(Path('.') / 'numpy_vids' / 'sun_mp4_n=2.npy'))
 
     spline = video.Video(spline_on_demo, "spline interpolation")
-    spline.frame_rate = 15
+    spline.frame_rate = 6
     # print(spline.frames[-1])
 
     spline.play_video()

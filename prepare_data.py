@@ -45,7 +45,7 @@ def interpolation_frames(all_pixel_data, kept, n):
     n: number of total frames we want
     """
     # make array for all frame numbers
-    x_vals = [int(i*(kept[1] - kept[0])/(n+1)) for i in range((n+1)*(len(kept)-1) + 1)]
+    x_vals = [i*(kept[1] - kept[0])/(n+1) for i in range((n+1)*(len(kept)-1) + 1)]
     print("x_vals")
     print(x_vals)
     print(kept)
@@ -128,13 +128,13 @@ if __name__ == '__main__':
     # write_wonky_file("compressed_video.npy", sparse_vid)
     all_pix_data = process_sparse_frames(sparse_vid)
     print("All Pixel Data", all_pix_data)
-    spline_vid = interpolation_frames(all_pix_data, kept, n = 15)
+    spline_vid = interpolation_frames(all_pix_data, kept, n = 30)
     print("Spline Video Dimensions: ", len(spline_vid), len(spline_vid[0]), len(spline_vid[0][0]))
     print(spline_vid[-1])
     print(sparse_vid[-1])
     
 
-    write_wonky_file(str(Path('.') / 'numpy_vids' / 'sun_mp4_new2_n=15.npy'), a = spline_vid)
+    write_wonky_file(str(Path('.') / 'numpy_vids' / 'sun_mp4_n=30.npy'), a = spline_vid)
 
 
     # write_wonky_file("20_3.npy", a = spline_vid)
