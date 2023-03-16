@@ -8,6 +8,8 @@ class Video:
         assert frames.shape[4 - 1] == 3
         self.frames = frames
 
+        
+
         if metadata_from:
             if type(metadata_from) == str:
                 self.info = metadata_from
@@ -114,10 +116,11 @@ if __name__ == '__main__':
     print("Running demo...")
 
     from pathlib import Path
+    from process import run_demo
 
-    demo_path = Path('.') / 'media' / 'sun.mp4'
+    demo_path = Path('.') / 'media' / 'keys.mp4'
     vid = Video.from_file(str(demo_path))
-    # vid.play_video()
+    vid.play_video()
 
 
     def flip_on(axis):
@@ -139,16 +142,24 @@ if __name__ == '__main__':
     sparse, _ = run_demo()
     # sparse = create_vids.simple()
     sparse = video.Video(sparse, "total interpolation")
-    sparse.frame_rate = 1
+    sparse.frame_rate = 2
     # print(sparse.frames[-1])
     sparse.play_video()
 
     import read_numpy_array_files
 
-    linear_on_sun = read_numpy_array_files.read_wonky_file(str(Path('.') / 'numpy_vids' / 'sun_linear_n=2.npy'))
+    interped = read_numpy_array_files.read_wonky_file(str(Path('.') / 'numpy_vids' / ('keys_' + 'spline' + '_n=4.npy')))
 
-    spline = video.Video(linear_on_sun, "linear interpolation")
-    spline.frame_rate = 6
-    print(spline.frames[-1])
+    interped = video.Video(interped, "(spline) interpolation")
+    interped.frame_rate = 10
+    # print(interped.frames[-1])
 
-    spline.play_video()
+    interped.play_video()
+
+    interped = read_numpy_array_files.read_wonky_file(str(Path('.') / 'numpy_vids' / ('keys_' + 'linear' + '_n=4.npy')))
+
+    interped = video.Video(interped, "(lin) interpolation")
+    interped.frame_rate = 10
+    # print(interped.frames[-1])
+
+    interped.play_video()
