@@ -1,6 +1,4 @@
 import numpy as np
-
-
 # from Nathaniel, HW3
 def map_zip(points, f):
     return zip(points, map(f, points))
@@ -242,14 +240,46 @@ def bézier(nodes, left_guidepoints, right_guidepoints):
     ret = np.zeros((n, 8))
 
     for i in range(n-1 + 1):
-        ret[i, 0] = nodes[i][0]
-        ret[i, 1] = 3 * (left_guidepoints[i][0] - nodes[i][0])
-        ret[i, 2] = 3 * (nodes[i][0] + right_guidepoints[i + 1][0] - 2*left_guidepoints[i][0])
-        ret[i, 3] = nodes[i + 1][0] - nodes[i][0] + 3*left_guidepoints[i][0] - 3*right_guidepoints[i + 1][0]
+        h.append(xs[i + 1] - xs[i])
+    
+    alpha = [None]
+    for i in range(1, n-1 + 1):
+        alpha.append(
+            (3 / h[i])*(f_xs[i + 1] - f_xs[i]) - \
+                (3 / h[i - 1]) * (f_xs[i] - f_xs[i - 1])
+        )
 
-        ret[i, 4] = nodes[i][1]
-        ret[i, 5] = 3 * (left_guidepoints[i][1] - nodes[i][1])
-        ret[i, 6] = 3 * (nodes[i][1] + right_guidepoints[i + 1][1] - 2*left_guidepoints[i][1])
-        ret[i, 7] = nodes[i + 1][1] - nodes[i][1] + 3*left_guidepoints[i][1] - 3*right_guidepoints[i + 1][1]
+    l = [1]
+    mu = [0]
+    z = [0]
+    for i in range(1, n-1 + 1):
+        l.append(2 * (xs[i + 1] - xs[i - 1]) - h[i - 1] * mu[i - 1])
+        mu.append(h[i] / l[i])
+        z.append(
+            (alpha[i] - h[i - 1] * z[i - 1]) / l[i]
+        )
+    l.append(1)
+    z.append(0)
 
-    return ret
+    c = np.zeros(n + 1)
+    b = np.zeros(n + 1)
+    d = np.zeros(n + 1)
+
+    c[n] = 0
+    for j in range(n - 1, 0 - 1, -1):
+        c[j] = (z[j] - mu[j]*c[j + 1])
+        b[j] = (f_xs[j + 1] - f_xs[j]) / h[j] - h[j] * (c[j + 1] + 2*c[j]) / 3
+        d[j] = (c[j + 1] - c[j]) / (3 * h[j])
+
+    ret = np.zeros((4, n-1 + 1))
+    # print(n, list(map(len, (f_xs, b, c, d))))
+    # print( f_xs, b, c, d)
+    ret[0, :] = a[0:-1]
+    ret[1, :] = b[0:-1]
+    ret[2, :] = c[0:-1]
+    ret[3, :] = d[0:-1]
+
+    ret = ret.transpose()
+
+    return a[0:-1], b[0:-1], c[0:-1], d[0:-1]
+
