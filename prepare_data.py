@@ -135,10 +135,10 @@ if __name__ == '__main__':
     
 
     print(sparse_vid, kept)
-    n = 5
+    n = 2
     linear_vid = linear_frames(all_pix_data, kept, n = n)
     print("Linear Fit Video Data")
     print(linear_vid)
 
-    write_wonky_file(str(Path('.') / 'numpy_vids' / f"sun_linear_n={n}"), linear_vid)
+    write_wonky_file(str(Path('.') / 'numpy_vids' / f"sun_linear_n={n}.npy"), linear_vid)
 
