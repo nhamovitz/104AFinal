@@ -127,7 +127,10 @@ if __name__ == '__main__':
     spline_vid = interpolation_frames(all_pix_data, kept, n = 3 * len(sparse_vid))
     print("Spline Video Dimensions: ", len(spline_vid), len(spline_vid[0]), len(spline_vid[0][0]))
     print(spline_vid)
-    # write_wonky_file("20_3.npy", a = spline_vid)
+
+    write_wonky_file(".\\numpy_vids\\sun_mp4.npy", a = spline_vid)
+
+
     # print(sparse_vid, kept)
     # linear_vid = linear_frames(all_pix_data, kept, n = 20*len(sparse_vid))
     # print("Linear Fit Video Data")

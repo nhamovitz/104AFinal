@@ -11,6 +11,7 @@ class Video:
         if metadata_from:
             if type(metadata_from) == str:
                 self.info = metadata_from
+                print(f"Creating video with info {metadata_from}")
             if type(metadata_from) == type(self):
                 self.frame_count = metadata_from.frame_count
                 self.frame_rate  = metadata_from.frame_rate
@@ -124,13 +125,33 @@ if __name__ == '__main__':
             return np.flip(frames, axis).copy()
         return f
 
-    analyze_against(vid, flip_on(0), "Reverse")
-    analyze_against(vid, flip_on(1), "upside_down")
-    analyze_against(vid, flip_on(2), "sideways")
-    analyze_against(vid, lambda frames: np.roll(frames, 1, 3).copy(), "colors")
-    analyze_against(vid, lambda frames: np.zeros_like(frames), "black")
+    # analyze_against(vid, flip_on(0), "Reverse")
+    # analyze_against(vid, flip_on(1), "upside_down")
+    # analyze_against(vid, flip_on(2), "sideways")
+    # analyze_against(vid, lambda frames: np.roll(frames, 1, 3).copy(), "colors")
+    # analyze_against(vid, lambda frames: np.zeros_like(frames), "black")
 
-        
+    from process import run_demo
+    import video
+
+
+    sparse, _ = run_demo()
+    sparse = video.Video(sparse, "total interpolation")
+    sparse.frame_rate = 1
+    print(sparse.frames[-1])
+    sparse.play_video()
+
+    import read_numpy_array_files
+
+    spline_on_demo = read_numpy_array_files.read_wonky_file('20_3.npy')
+
+    spline = video.Video(spline_on_demo, "spline interpolation")
+    spline.frame_rate = 1
+    print(spline.frames[-1])
+
+    spline.play_video()
+
+
         
 
 
