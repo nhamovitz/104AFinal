@@ -57,6 +57,10 @@ def linear_interpolation(x_vals, n, xi_vec, fi_vec):
         x0, x1 = xi_vec[i], xi_vec[i+1]
         while x_vals[j] < x1:
             f_vec[j] = fi_vec[i] + x_vals[j]*(fi_vec[i+1] - fi_vec[i])/(x1-x0)
+            if f_vec[j] > 255:
+                f_vec[j] = 255
+            if f_vec[j] < 0:
+                f_vec[j] = 0
             j += 1
     f_vec[-1] = fi_vec[-1]
     return f_vec
