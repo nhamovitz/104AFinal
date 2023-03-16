@@ -10,6 +10,7 @@ def sparse(path: str, cut_proportion = 2):
     frame_count = cap.get(cv2.CAP_PROP_FRAME_COUNT)
     width = cap.get(cv2.CAP_PROP_FRAME_WIDTH)
     height = cap.get(cv2.CAP_PROP_FRAME_HEIGHT)
+    frame_rate = cap.get(cv2.CAP_PROP_FPS)
 
     # these come as floats for some reason
     # note: we want to round up, not round or truncate
@@ -97,15 +98,11 @@ def run_demo():
 
     write_black_with_codec('mpv4', 'mpg')
 
-    sparse_vid, kept, frame_rate = sparse(demo, 20)
-    print("every 20", sparse_vid.shape, kept, len(kept))
+    sparse_vid, kept, frame_rate = sparse(demo, 40)
+    print("every 40", sparse_vid.shape, kept, len(kept))
 
     return sparse_vid, kept
 
 if __name__ == '__main__':
     run_demo()
-
-
-
-
 
