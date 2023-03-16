@@ -126,15 +126,8 @@ if __name__ == '__main__':
     # write_wonky_file("compressed_video.npy", sparse_vid)
     all_pix_data = process_sparse_frames(sparse_vid)
     print("All Pixel Data", all_pix_data)
-<<<<<<< HEAD
-    spline_vid = interpolation_frames(all_pix_data, kept, n = 12)
-    print("shut up")
-    print("Spline Video Dim: ", len(spline_vid), len(spline_vid[0]), len(spline_vid[0][0]))
-=======
-    spline_vid = interpolation_frames(all_pix_data, kept, n = 20)
-    print("helloooooo")
-    print("Spl Video Dimensions: ", len(spline_vid), len(spline_vid[0]), len(spline_vid[0][0]))
->>>>>>> de77c8db928a73a8b8247a3e146020a186850d26
+    spline_vid = interpolation_frames(all_pix_data, kept, n = 30)
+    print("Spline Video Dimensions: ", len(spline_vid), len(spline_vid[0]), len(spline_vid[0][0]))
     print(spline_vid[-1])
     print(sparse_vid[-1])
     
