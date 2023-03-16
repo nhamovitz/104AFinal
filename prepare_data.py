@@ -122,30 +122,23 @@ def linear_frames(all_pixel_data, kept, n):
 
 if __name__ == '__main__':
     sparse_vid, kept = run_demo()
-    print("Sparse Video Dimensions: ", len(sparse_vid), len(sparse_vid[0]), len(sparse_vid[0][0]))
-    # write_wonky_file("compressed_video.npy", sparse_vid)
+    # print("Sparse Video Dimensions: ", len(sparse_vid), len(sparse_vid[0]), len(sparse_vid[0][0]))
+    # # write_wonky_file("compressed_video.npy", sparse_vid)
     all_pix_data = process_sparse_frames(sparse_vid)
-    print("All Pixel Data", all_pix_data)
-<<<<<<< HEAD
-    spline_vid = interpolation_frames(all_pix_data, kept, n = 12)
-    print("shut up")
-    print("Spline Video Dim: ", len(spline_vid), len(spline_vid[0]), len(spline_vid[0][0]))
-=======
+    # print("All Pixel Data", all_pix_data)
     spline_vid = interpolation_frames(all_pix_data, kept, n = 20)
     print("helloooooo")
     print("Spl Video Dimensions: ", len(spline_vid), len(spline_vid[0]), len(spline_vid[0][0]))
->>>>>>> de77c8db928a73a8b8247a3e146020a186850d26
-    print(spline_vid[-1])
-    print(sparse_vid[-1])
+    # print(spline_vid[-1])
+    # print(sparse_vid[-1])
+
+
     
 
-    write_wonky_file(str(Path('.') / 'numpy_vids' / 'sun_mp4_n=30.npy'), a = spline_vid)
-    # write_wonky_file(str(Path('.') / 'numpy_vids' / 'sun_mp4_new2_n=15.npy'), a = spline_vid)
+    print(sparse_vid, kept)
+    linear_vid = linear_frames(all_pix_data, kept, n = 20*len(sparse_vid))
+    print("Linear Fit Video Data")
+    print(linear_vid)
 
-
-    # write_wonky_file("20_3.npy", a = spline_vid)
-    # print(sparse_vid, kept)
-    # linear_vid = linear_frames(all_pix_data, kept, n = 20*len(sparse_vid))
-    # print("Linear Fit Video Data")
-    # print(linear_vid)
+    write_wonky_file(str(Path('.') / 'numpy_vids' / 'uhhh'))
 
