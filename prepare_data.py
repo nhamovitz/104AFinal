@@ -3,6 +3,7 @@ from process import run_demo
 from interpolation_methods import spline_interpolation, linear_interpolation
 import numpy as np
 from read_numpy_array_files import read_wonky_file, write_wonky_file
+from pathlib import Path
 
 def process_sparse_frames(sparse_vid):
     """
@@ -128,7 +129,7 @@ if __name__ == '__main__':
     print("Spline Video Dimensions: ", len(spline_vid), len(spline_vid[0]), len(spline_vid[0][0]))
     print(spline_vid)
 
-    write_wonky_file(".\\numpy_vids\\sun_mp4.npy", a = spline_vid)
+    write_wonky_file(str(Path('.') / 'numpy_vids' / 'sun_mp4.npy'), a = spline_vid)
 
 
     # print(sparse_vid, kept)

@@ -115,7 +115,7 @@ if __name__ == '__main__':
 
     from pathlib import Path
 
-    demo_path = Path('.') / 'media' / 'vid1_WIN_20230310_14_20_03_Pro.mp4'
+    demo_path = Path('.') / 'media' / 'sun.mp4'
     vid = Video.from_file(str(demo_path))
     vid.play_video()
 
@@ -143,7 +143,7 @@ if __name__ == '__main__':
 
     import read_numpy_array_files
 
-    spline_on_demo = read_numpy_array_files.read_wonky_file('20_3.npy')
+    spline_on_demo = read_numpy_array_files.read_wonky_file(str(Path('.') / 'numpy_vids' / 'sun_mp4.npy'))
 
     spline = video.Video(spline_on_demo, "spline interpolation")
     spline.frame_rate = 1
