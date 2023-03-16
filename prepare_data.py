@@ -127,7 +127,8 @@ if __name__ == '__main__':
     all_pix_data = process_sparse_frames(sparse_vid)
     print("All Pixel Data", all_pix_data)
     spline_vid = interpolation_frames(all_pix_data, kept, n = 20)
-    print("Spline Video Dimensions: ", len(spline_vid), len(spline_vid[0]), len(spline_vid[0][0]))
+    print("helloooooo")
+    print("Spl Video Dimensions: ", len(spline_vid), len(spline_vid[0]), len(spline_vid[0][0]))
     print(spline_vid[-1])
     print(sparse_vid[-1])
     
