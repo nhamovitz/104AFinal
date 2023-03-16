@@ -96,7 +96,7 @@ def extra_funct(sparse_vid):
                 new_blue[i] = (blue[i//2] + blue[i//2 + 1]) * 0.5
                 new_green[i] = (green[i//2] + green[i//2 + 1]) * 0.5
         new_vid[r] = [ [new_red[i], new_blue[i], new_green[i]] for i in range(vid_length) ]
-    print(new_vid)
+    # print(new_vid)
     return new_vid
 
 def linear_frames(all_pixel_data, kept, n):
@@ -122,23 +122,25 @@ def linear_frames(all_pixel_data, kept, n):
 
 if __name__ == '__main__':
     sparse_vid, kept = run_demo()
-    print("Sparse Video Dimensions: ", len(sparse_vid), len(sparse_vid[0]), len(sparse_vid[0][0]))
-    # write_wonky_file("compressed_video.npy", sparse_vid)
+    print("made sparse vid, kept:")
+    # print("Sparse Video Dimensions: ", len(sparse_vid), len(sparse_vid[0]), len(sparse_vid[0][0]))
+    # # write_wonky_file("compressed_video.npy", sparse_vid)
     all_pix_data = process_sparse_frames(sparse_vid)
-    print("All Pixel Data", all_pix_data)
-    spline_vid = interpolation_frames(all_pix_data, kept, n = 20)
-    print("Spline Video Dimensions: ", len(spline_vid), len(spline_vid[0]), len(spline_vid[0][0]))
-    print(spline_vid[-1])
-    print(sparse_vid[-1])
+    # print("All Pixel Data", all_pix_data)
+    # print("Spline Video Dimensions: ", len(spline_vid), len(spline_vid[0]), len(spline_vid[0][0]))
+    # print(spline_vid[-1])
+    # print(sparse_vid[-1])
+
+
     
 
-    write_wonky_file(str(Path('.') / 'numpy_vids' / 'sun_mp4_n=30.npy'), a = spline_vid)
-    # write_wonky_file(str(Path('.') / 'numpy_vids' / 'sun_mp4_new2_n=15.npy'), a = spline_vid)
-
-
-    # write_wonky_file("20_3.npy", a = spline_vid)
     # print(sparse_vid, kept)
-    # linear_vid = linear_frames(all_pix_data, kept, n = 20*len(sparse_vid))
-    # print("Linear Fit Video Data")
-    # print(linear_vid)
+    print(kept)
+    n = 4
+    # spline_vid = interpolation_frames(all_pix_data, kept, n = n)
+    # linear_vid = linear_frames(all_pix_data, kept, n = n)
+    print("Linear Fit Video Data")
+    # print(spline_vi)
+
+    # write_wonky_file(str(Path('.') / 'numpy_vids' / f"keys_linear_n={n}.npy"), linear_vid)
 

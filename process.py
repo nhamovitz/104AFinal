@@ -75,7 +75,7 @@ def write_video(frames: np.ndarray, name: str, fps: float):
 
 def run_demo():
     from pathlib import Path
-    demo = Path('.') / 'media' / 'sun.mp4'
+    demo = str(Path('.') / 'media' / 'keys.mp4')
     
     # sparse_vid, kept, _ = sparse(demo)
     # print("every 2", sparse_vid.shape, kept, len(kept))
@@ -99,7 +99,7 @@ def run_demo():
 
     # write_black_with_codec('mpv4', 'mpg')
 
-    interval = 15
+    interval = 5
     sparse_vid, kept, frame_rate = sparse(demo, interval)
     print(f"every {interval}", sparse_vid.shape, kept, len(kept))
 
