@@ -62,7 +62,7 @@ def interpolation_frames(all_pixel_data, kept, n):
     return spline_video
 
 def new_vid(n, frame):
-    return np.zeros((n, len(frame), len(frame[0]),3))
+    return np.zeros((n, len(frame), len(frame[0]),3), dtype=np.uint8)
 
 def interpolate_pixel_data(pixel_data, kept, x_vec):
     # Do spline processing
