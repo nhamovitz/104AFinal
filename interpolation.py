@@ -1,4 +1,4 @@
-
+import numpy as np
 # from Nathaniel, HW3
 def map_zip(points, f):
     return zip(points, map(f, points))
@@ -280,16 +280,5 @@ def natural_cubic_spline(xs, f_xs):
 
     ret = ret.transpose()
 
-    tex = ""
-    for j in range(n-1 + 1):
-        tex += f"$S_{j} = {a[j]} + {b[j]}(x - {xs[j]}) + {c[j]}(x - {xs[j]})^2 + {d[j]}(x - {xs[j]})^3$"
-        if j != n-1:
-            tex += "; "
-    display(Latex(tex))
-
-    # table = table_writer(ret, [f"$S_{j}$" for j in range(n-1 + 1)], ["$a_j$", "$b_j$", "$c_j$", "$d_j$"])
-    # print(table)
-
-    print(tex)
-    return ret
+    return a[0:-1], b[0:-1], c[0:-1], d[0:-1]
 

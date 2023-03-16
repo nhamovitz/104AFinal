@@ -44,10 +44,13 @@ def interpolation_frames(all_pixel_data, kept, n):
     n: number of total frames we want
     """
     # make array for all frame numbers
-    x_vals = [int(i*(kept[1] - kept[0])/(n+1)) for i in range(n*len(kept))]
+    x_vals = [int(i*(kept[1] - kept[0])/(n+1)) for i in range((n+1)*(len(kept)-1) + 1)]
+    print("x_vals")
+    print(x_vals)
+    print(kept)
     # construct video with splines
     print("Make empty new video")
-    spline_video = new_vid(n, all_pixel_data)
+    spline_video = new_vid(len(x_vals), all_pixel_data)
     # all_spline_data = [ [ [] for pixel in row ] for row in all_pixel_data]
     all_spline_data = np.zeros((len(all_pixel_data), len(all_pixel_data[0])))
     print("Perform Interpolations")
@@ -57,7 +60,7 @@ def interpolation_frames(all_pixel_data, kept, n):
             r_vec = spline_interpolation(x_vals, n, xi_vec = kept, fi_vec = all_pixel_data[r,p,0])
             g_vec = spline_interpolation(x_vals, n, xi_vec = kept, fi_vec = all_pixel_data[r,p,1])
             b_vec = spline_interpolation(x_vals, n, xi_vec = kept, fi_vec = all_pixel_data[r,p,2])
-            for f in range(n):
+            for f in range(len(x_vals)):
                 spline_video[f,r,p] = [r_vec[f], g_vec[f], b_vec[f] ]
     return spline_video
 
@@ -103,7 +106,7 @@ def linear_frames(all_pixel_data, kept, n):
     x_vals = [int(i*(kept[1] - kept[0])/(n+1)) for i in range(n*len(kept))]
     # construct video with splines
     print("Make empty new video")
-    spline_video = new_vid(n, all_pixel_data)
+    spline_video = new_vid(len(x_vals), all_pixel_data)
     # all_spline_data = [ [ [] for pixel in row ] for row in all_pixel_data]
     all_spline_data = np.zeros((len(all_pixel_data), len(all_pixel_data[0])))
     print("Perform Interpolations")
@@ -124,13 +127,13 @@ if __name__ == '__main__':
     # write_wonky_file("compressed_video.npy", sparse_vid)
     all_pix_data = process_sparse_frames(sparse_vid)
     print("All Pixel Data", all_pix_data)
-    spline_vid = interpolation_frames(all_pix_data, kept, n = 3 * len(sparse_vid))
+    spline_vid = interpolation_frames(all_pix_data, kept, n = 5)
     print("Spline Video Dimensions: ", len(spline_vid), len(spline_vid[0]), len(spline_vid[0][0]))
-    print(spline_vid)
+    print(spline_vid[-1])
+    print(sparse_vid[-1])
 
-    write_wonky_file(".\\numpy_vids\\sun_mp4.npy", a = spline_vid)
 
-
+    # write_wonky_file("20_3.npy", a = spline_vid)
     # print(sparse_vid, kept)
     # linear_vid = linear_frames(all_pix_data, kept, n = 20*len(sparse_vid))
     # print("Linear Fit Video Data")

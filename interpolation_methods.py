@@ -1,5 +1,6 @@
+from interpolation import natural_cubic_spline
 
-def natural_cubic_spline(n, x_vec, a_vec):
+def natural_cubic_spline1(n, x_vec, a_vec):
     h = [ x_vec[i+1] - x_vec[i] for i in range(n)]
     alpha = [0]
     for i in range(1,n):
@@ -26,12 +27,13 @@ def spline_interpolation(x_vals, n, xi_vec, fi_vec):
     Use spline interpolation to find the f_vector
     """
     # set up return vector
-    f_vec = [ 0 for _ in x_vals]
+    f_vec = [ 10 for _ in x_vals]
     # find coefficients of spline
-    a, b, c, d = natural_cubic_spline(len(xi_vec) - 1, xi_vec, fi_vec)
+    a, b, c, d = natural_cubic_spline(xi_vec, fi_vec)
     # start iterating through x_vals at j = 0
     j = 0
     # iterate through every spline
+    
     for i in range(len(xi_vec) - 1):
         xi = xi_vec[i]
         # take x_vals until not in range anymore (lower bound OK from previous iteration)
@@ -44,6 +46,7 @@ def spline_interpolation(x_vals, n, xi_vec, fi_vec):
                 f_vec[j] = 0
                 
             j += 1
+    f_vec[-1] = fi_vec[-1]
     return f_vec
 
 def linear_interpolation(x_vals, n, xi_vec, fi_vec):
