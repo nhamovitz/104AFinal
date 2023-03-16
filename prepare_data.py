@@ -62,7 +62,7 @@ def interpolation_frames(all_pixel_data, kept, n):
     return spline_video
 
 def new_vid(n, frame):
-    return np.zeros((n, len(frame), len(frame[0]),3))
+    return np.zeros((n, len(frame), len(frame[0]),3), dtype=np.uint8)
 
 def interpolate_pixel_data(pixel_data, kept, x_vec):
     # Do spline processing
@@ -127,7 +127,10 @@ if __name__ == '__main__':
     spline_vid = interpolation_frames(all_pix_data, kept, n = 3 * len(sparse_vid))
     print("Spline Video Dimensions: ", len(spline_vid), len(spline_vid[0]), len(spline_vid[0][0]))
     print(spline_vid)
-    # write_wonky_file("20_3.npy", a = spline_vid)
+
+    write_wonky_file("20_3.npy", a = spline_vid)
+
+
     # print(sparse_vid, kept)
     # linear_vid = linear_frames(all_pix_data, kept, n = 20*len(sparse_vid))
     # print("Linear Fit Video Data")

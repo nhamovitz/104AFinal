@@ -24,7 +24,7 @@ def sparse(path: str, cut_proportion = 2):
     width = int(width)
     height = int(height)
     
-    sparse_vid = np.empty((keep_count, height, width, 3))
+    sparse_vid = np.empty((keep_count, height, width, 3), dtype=np.uint8)
 
     kept_frames = []
     frame_number = 0
@@ -76,8 +76,8 @@ def write_video(frames: np.ndarray, name: str, fps: float):
 def run_demo():
     demo = '.\\media\\vid1_WIN_20230310_14_20_03_Pro.mp4'
 
-    sparse_vid, kept = sparse(demo)
-    print("every 2", sparse_vid.shape, kept, len(kept))
+    # sparse_vid, kept, _ = sparse(demo)
+    # print("every 2", sparse_vid.shape, kept, len(kept))
 
     # sparse_vid, kept, _ = sparse(demo, 3)
     # print("every 3", sparse_vid.shape, kept, len(kept))
@@ -96,10 +96,11 @@ def run_demo():
     #         except Exception as e:
     #             print(f"{codec=}, {ext=}, {e=}")
 
-    write_black_with_codec('mpv4', 'mpg')
+    # write_black_with_codec('mpv4', 'mpg')
 
-    sparse_vid, kept, frame_rate = sparse(demo, 40)
-    print("every 40", sparse_vid.shape, kept, len(kept))
+    keep = 20
+    sparse_vid, kept, frame_rate = sparse(demo, keep)
+    print(f"every {keep}", sparse_vid.shape, kept, len(kept))
 
     return sparse_vid, kept
 

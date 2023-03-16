@@ -1,5 +1,6 @@
 *.code-workspace
 /media/test/
+/numpy_vids/
 
 
 # Byte-compiled / optimized / DLL files
