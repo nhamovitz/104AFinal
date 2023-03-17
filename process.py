@@ -58,19 +58,13 @@ def write_black_with_codec(codec, extension):
         writer.write(blank_frame)
     writer.release()
 
-
-
-def write_video(frames: np.ndarray, name: str, fps: float):
-    _, height, width, _ = frames.shape
-
-    codec = cv2.VideoWriter_fourcc(*'XVID') # maybe smth different?
-    writer = cv2.VideoWriter(name + '.avi', codec, fps, (height, width))
-
-    for frame in frames:
-        blank_frame = np.zeros_like(frame)
-        writer.write(blank_frame)
-
-    writer.release()
+def test_writing_video():
+    for codec in ('DIVX', 'XVID', 'MJPG', 'X264', 'WMV1', 'WMV2', 'MP4V', 'MPEG', 'H264', 'mp4v', 'mpv4'):
+        for ext in ('mp4', 'avi', 'mpg'):
+            try:
+                write_black_with_codec(codec, ext)
+            except Exception as e:
+                print(f"{codec=}, {ext=}, {e=}")
 
 
 def run_demo():
@@ -89,15 +83,6 @@ def run_demo():
     # redone_vid, _, _ = sparse(demo, 1)
 
     # print(redone_vid.shape)
-
-    # for codec in ('DIVX', 'XVID', 'MJPG', 'X264', 'WMV1', 'WMV2', 'MP4V', 'MPEG', 'H264', 'mp4v', 'mpv4'):
-    #     for ext in ('mp4', 'avi', 'mpg'):
-    #         try:
-    #             video_with_codec(codec, ext)
-    #         except Exception as e:
-    #             print(f"{codec=}, {ext=}, {e=}")
-
-    # write_black_with_codec('mpv4', 'mpg')
 
     interval = 5
     sparse_vid, kept, frame_rate = sparse(demo, interval)
