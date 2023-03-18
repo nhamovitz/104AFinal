@@ -78,15 +78,19 @@ def linear_frames(all_pixel_data, kept, n):
 def lagrange_neville(x_vals, xi_vec, fi_vec):
     points = list(zip(xi_vec, fi_vec))
     Q_best = best_neville(points)
+    print("Constructed Q table")
     return [Q_best(x) for x in x_vals]
 
 def run_interpolation(video, sparse_interval, interp_with, reconstruct_granularity = None):
-    output_file = Path('.') / 'numpy_vids' / f"keys_{interp_with.__name__}_n={reconstruct_granularity}.npy"
-    
+    video = Path(video)
+
+    output_file = Path('.') / 'numpy_vids' / f"{video.stem}_sparse={sparse_interval}_{interp_with.__name__}_n={reconstruct_granularity}.npy"
+
     if output_file.exists():
         print(f"corresponding `.npy` file {output_file.name} already exists")
+        return
 
-    demo = Path('.') / 'media' / video
+    demo = str(Path('.') / 'media' / video)
     
     sparse_vid, kept, _ = sparse(demo, sparse_interval)
     # write_wonky_file("compressed_video.npy", sparse_vid)
@@ -107,8 +111,9 @@ def run_interpolation(video, sparse_interval, interp_with, reconstruct_granulari
 
 if __name__ == '__main__':
     run_interpolation(
-        'keys.mp4',
-        5, 
-        lagrange_neville
+        'sun.mp4',
+        30,
+        lagrange_neville,
+        reconstruct_granularity = 10,
     )
 

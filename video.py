@@ -135,6 +135,9 @@ def analyze_against(vid: Video, func, description: str, play_variant = True):
 def demo1(file):
     """read and play file, and then play and play error of: reversed, upside down, flipped x-y, color channels rotated, equal length of black"""
     
+    vid = Video.from_file(str(demo_path))
+    vid.play_video()
+
     def flip_on(axis):
         def f(frames):
             return np.flip(frames, axis).copy()
@@ -153,10 +156,18 @@ if __name__ == '__main__':
 
     from pathlib import Path
     from process import run_demo
+    import read_numpy_array_files
 
-    demo_path = Path('.') / 'media' / 'keys.mp4'
+
+    demo_path = Path('.') / 'media' / 'sun.mp4'
     vid = Video.from_file(str(demo_path))
+    vid.frame_rate = 90 / 5
     vid.play_video()
+    # demo1(demo_path)
+    lagrange = read_numpy_array_files.read_wonky_file(str(Path('.') / 'numpy_vids' /'sun_lagrange_neville_n=10.npy'))
+    lagrange = Video(lagrange, "lagrange")
+    lagrange.frame_rate = 4
+    lagrange.play_video()
     
     sparse, _ = run_demo()
     # sparse = create_vids.simple()
@@ -165,7 +176,6 @@ if __name__ == '__main__':
     # print(sparse.frames[-1])
     sparse.play_video()
 
-    import read_numpy_array_files
 
     spl = read_numpy_array_files.read_wonky_file(str(Path('.') / 'numpy_vids' / ('keys_' + 'spline' + '_n=4.npy')))
     spl = Video(spl, "(spline) interpolation")

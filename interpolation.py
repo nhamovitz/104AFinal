@@ -1,9 +1,5 @@
 import numpy as np
 # from Nathaniel, HW3
-def map_zip(points, f):
-    return zip(points, map(f, points))
-
-from functools import partial
 
 def lagrange1(points):
     ps = list(list(points).copy())
@@ -63,7 +59,8 @@ def rianna_mod(x, f, points = []):
 # from Nathaniel, HW4
 def neville(points):
     """
-    points: iteratable of `(x, f(x))` pairs"""
+    points: iteratable of `(x, f(x))` pairs
+    """
     n = len(points) - 1
     Qs = [[(lambda x, i=i: points[i][1])] for i in range(n + 1)]
     for i in range(1, n + 1):
@@ -77,6 +74,10 @@ def neville(points):
     return Qs
 
 def best_neville(points):
+    """
+    points: iteratable of `(x, f(x))` pairs
+    returns: `Q` function in the bottom/far right of the Neville's method table
+    """
     Qs = neville(points)
     return Qs[-1][-1]
 
