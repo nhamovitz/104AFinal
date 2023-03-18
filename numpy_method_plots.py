@@ -23,6 +23,10 @@ def plot_a_pixel(frames_array, row, column, title="Plot of Spline Interpolation"
         red[f] = frames_array[f][row][column][0]
         green[f] = frames_array[f][row][column][1]
         blue[f] = frames_array[f][row][column][2]
+
+    high_point = max((red.max(), green.max(), blue.max())) * 1.07
+    for x in x_vals:
+        plt.plot(x, high_point, '.', color = np.array([red[x], green[x], blue[x]]) / 255)
     
     plt.plot(x_vals, red, color = 'red')
     plt.plot(x_vals, green, color = 'green')
@@ -33,6 +37,9 @@ def plot_a_pixel(frames_array, row, column, title="Plot of Spline Interpolation"
     plt.legend(["Red Interpolation", "Green Interpolation", "Blue Interpolatoin"])
 
     plt.show()
+
+def track_color():
+    pass
 
 def file_to_plot(npy_file, x_frac=0.5, y_frac=0.5, method="spline"):
     """
@@ -52,7 +59,7 @@ def file_to_plot(npy_file, x_frac=0.5, y_frac=0.5, method="spline"):
 
 if __name__ == "__main__":
     # Spline Plot
-    path = str(Path('.') / ('keys_' + 'spline' + '_n=4.npy'))
+    path = str(Path('.') / 'numpy_vids' / ('keys_' + 'spline' + '_n=4.npy'))
     file_to_plot(path)
 
 
