@@ -62,6 +62,8 @@ def rianna_mod(x, f, points = []):
 
 # from Nathaniel, HW4
 def neville(points):
+    """
+    points: iteratable of `(x, f(x))` pairs"""
     n = len(points) - 1
     Qs = [[(lambda x, i=i: points[i][1])] for i in range(n + 1)]
     for i in range(1, n + 1):
@@ -83,6 +85,7 @@ def best_neville_at(points, x):
     return Qs[-1][-1](x)
 
 def apply_total(Qs, x):
+    """vectorized function application - given input array of `Q` functions and point `x`, calculates output array of `Q(x)` values"""
     ret = []
     for row in Qs:
         ret_row = []

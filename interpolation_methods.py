@@ -22,7 +22,7 @@ def natural_cubic_spline1(n, x_vec, a_vec):
         d[j] = (c[j+1] - c[j])/(3*h[j])
     return a_vec[0:n], b[0:n], c[0:n], d[0:n]
 
-def spline_interpolation(x_vals, n, xi_vec, fi_vec):
+def spline_interpolation(x_vals, xi_vec, fi_vec):
     """
     Use spline interpolation to find the f_vector
     """
@@ -49,7 +49,7 @@ def spline_interpolation(x_vals, n, xi_vec, fi_vec):
     f_vec[-1] = fi_vec[-1]
     return f_vec
 
-def linear_interpolation(x_vals, n, xi_vec, fi_vec):
+def linear_interpolation(x_vals, xi_vec, fi_vec):
     """
     x_vals: x values we want data at in the end
     n: not used

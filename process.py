@@ -12,6 +12,8 @@ def sparse(path: str, cut_proportion = 2):
     height = cap.get(cv2.CAP_PROP_FRAME_HEIGHT)
     frame_rate = cap.get(cv2.CAP_PROP_FPS)
 
+    print(f"Making sparse vid; original shape {(frame_count, height, width, 3)}.")
+
     # these come as floats for some reason
     # note: we want to round up, not round or truncate
     # that's weird to me, but you get an off-by-one error with n = 3 if this is `int(frame_count // cut_proportion), and same with n = 10 and `round(frame_count / cut_proportion)`
@@ -46,6 +48,7 @@ def sparse(path: str, cut_proportion = 2):
 
         frame_number += 1
 
+    print(f"Kept every {cut_proportion}; {len(kept_frames)} frames total; indices {kept_frames}.")
     return sparse_vid, kept_frames, frame_rate
 
 
