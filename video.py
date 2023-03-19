@@ -18,7 +18,7 @@ class Video:
                 self.info = metadata_from
                 print(f"with info {metadata_from}")
             if type(metadata_from) == type(self):
-                self.frame_count = metadata_from.frame_count
+                # self.frame_count = metadata_from.frame_count
                 self.frame_rate  = metadata_from.frame_rate
                 self.info        = metadata_from.info
 
@@ -120,10 +120,11 @@ def analyze_against(vid: Video, func, description: str, play_variant = True):
             new_vid.info = description
 
     if play_variant:
-        new_vid.play_video(fast=True)
+        new_vid.play_video(fast=False)
 
     print(f"Error analysis for variant {description}.")
     abs_error = Video.abs_error(vid, new_vid)
+    print(frames, new_frames, abs_error)
     print(f"Mean absolute error: {np.mean(abs_error)}")
     print(f"Mean relative error: {np.mean(Video.rel_error(vid, new_vid))}")
     if play_variant:
@@ -132,10 +133,9 @@ def analyze_against(vid: Video, func, description: str, play_variant = True):
         rel_error.play_video()
 
 
-def demo1(file):
-    """read and play file, and then play and play error of: reversed, upside down, flipped x-y, color channels rotated, equal length of black"""
+def demo1(vid):
+    """play video, and then play and play error of: reversed, upside down, flipped x-y, color channels rotated, equal length of black"""
     
-    vid = Video.from_file(str(demo_path))
     vid.play_video()
 
     def flip_on(axis):
@@ -143,10 +143,10 @@ def demo1(file):
             return np.flip(frames, axis).copy()
         return f
 
-    analyze_against(vid, flip_on(0), "Reverse")
+    # analyze_against(vid, flip_on(0), "Reverse")
     analyze_against(vid, flip_on(1), "upside_down")
-    analyze_against(vid, flip_on(2), "sideways")
-    analyze_against(vid, lambda frames: np.roll(frames, 1, 3).copy(), "colors")
+    # analyze_against(vid, flip_on(2), "sideways")
+    # analyze_against(vid, lambda frames: np.roll(frames, 1, 3).copy(), "colors")
     analyze_against(vid, lambda frames: np.zeros_like(frames), "black")
 
 
@@ -157,13 +157,19 @@ if __name__ == '__main__':
     from pathlib import Path
     from process import run_demo
     import read_numpy_array_files
+    import create_vids
 
 
     demo_path = Path('.') / 'media' / 'sun.mp4'
-    vid = Video.from_file(str(demo_path))
-    vid.frame_rate = 90 / 5
-    vid.play_video()
-    # demo1(demo_path)
+    # vid = Video.from_file(str(demo_path))
+    # vid.frame_rate *= 0.7
+    vid = Video(create_vids.sun(), "`sun`")
+    vid.frame_rate = 1.1
+    # print(vid.frames)
+    # vid.play_video()
+    while True:
+        demo1(vid)
+    exit()
     lagrange = read_numpy_array_files.read_wonky_file(str(Path('.') / 'numpy_vids' /'sun_lagrange_neville_n=10.npy'))
     lagrange = Video(lagrange, "lagrange")
     lagrange.frame_rate = 4
