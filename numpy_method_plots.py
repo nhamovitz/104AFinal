@@ -24,17 +24,19 @@ def plot_a_pixel(frames_array, row, column, title="Plot of Spline Interpolation"
         green[f] = frames_array[f][row][column][1]
         blue[f] = frames_array[f][row][column][2]
 
-    high_point = max((red.max(), green.max(), blue.max())) * 1.07
-    for x in x_vals:
-        plt.plot(x, high_point, '.', color = np.array([red[x], green[x], blue[x]]) / 255)
     
     plt.plot(x_vals, red, color = 'red')
     plt.plot(x_vals, green, color = 'green')
     plt.plot(x_vals, blue, color = 'blue')
+
+    high_point = max((red.max(), green.max(), blue.max())) * 1.07
+    for x in x_vals:
+        plt.plot(x, high_point, '.', color = np.array([red[x], green[x], blue[x]]) / 255)
+
     plt.xlabel("Frame Number")
     plt.ylabel("RGB value (0 to 255)")
     plt.title(title)
-    plt.legend(["Red Interpolation", "Green Interpolation", "Blue Interpolatoin"])
+    plt.legend(["Red Interpolation", "Green Interpolation", "Blue Interpolation"])
 
     plt.show()
 
