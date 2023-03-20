@@ -1,6 +1,7 @@
 from process import sparse
 from process import run_demo
 from interpolation_methods import spline_interpolation, linear_interpolation
+from interpolation import best_neville
 import numpy as np
 from read_numpy_array_files import read_wonky_file, write_wonky_file
 from pathlib import Path
@@ -16,6 +17,8 @@ def process_sparse_frames(sparse_vid):
         all_pixel data: records the r,g, and b values for every pixel. record these values as lists to 
         represent changes across frames
     """
+    return np.moveaxis(sparse_vid, 0, -1)
+
     # print("Sparse Video", sparse_vid)
     all_pixel_data = [ [ [ [],[],[] ] for pixel in row] for row in sparse_vid[0]]
     all_pixel_data = np.zeros((len(sparse_vid[0]), len(sparse_vid[0][0]), 3, len(sparse_vid)))
@@ -34,7 +37,12 @@ def process_sparse_frames(sparse_vid):
 
     return all_pixel_data
 
-def interpolation_frames(all_pixel_data, kept, n):
+def new_vid(n, frame):
+    """`n` blank frames with shape of `frame`"""
+    return np.zeros((n, len(frame), len(frame[0]),3), dtype=np.uint8)
+
+
+def interpolation_frames(all_pixel_data, kept, n, interpolation_function = spline_interpolation):
     """
     pixel data: returned from process_sparse_frames
         row:
@@ -54,93 +62,57 @@ def interpolation_frames(all_pixel_data, kept, n):
     print("Perform Interpolations")
     for r in range(len(all_spline_data)):
         for p in range(len(all_spline_data[0])):
+            # print(f"{(r, p)=}")
             # this function is in another file
-            r_vec = spline_interpolation(x_vals, n, xi_vec = kept, fi_vec = all_pixel_data[r,p,0])
-            g_vec = spline_interpolation(x_vals, n, xi_vec = kept, fi_vec = all_pixel_data[r,p,1])
-            b_vec = spline_interpolation(x_vals, n, xi_vec = kept, fi_vec = all_pixel_data[r,p,2])
+            r_vec = interpolation_function(x_vals, xi_vec = kept, fi_vec = all_pixel_data[r,p,0])
+            g_vec = interpolation_function(x_vals, xi_vec = kept, fi_vec = all_pixel_data[r,p,1])
+            b_vec = interpolation_function(x_vals, xi_vec = kept, fi_vec = all_pixel_data[r,p,2])
             for f in range(len(x_vals)):
-                spline_video[f,r,p] = [r_vec[f], g_vec[f], b_vec[f] ]
+                spline_video[f,r,p] = [r_vec[f], g_vec[f], b_vec[f]]
     return spline_video
 
-def new_vid(n, frame):
-    return np.zeros((n, len(frame), len(frame[0]),3), dtype=np.uint8)
-
-def interpolate_pixel_data(pixel_data, kept, x_vec):
-    # Do spline processing
-    spline_vec = spline_interpolation(x_vec, len(kept) - 1, kept, pixel_data)
-    return spline_vec
-
-
-def extra_funct(sparse_vid):
-    new_vid = [ [ [0,0,0] for __ in len(sparse_vid[0])] for _ in len(sparse_vid)]
-    # iterate through rows and seperate colors
-    for r in sparse_vid:
-        row = sparse_vid[r]
-        red = [p[0] for p in row]
-        green = [p[1] for p in row]
-        blue = [p[2] for p in row]
-        # use interpolation to find the in between
-        # Some test stuff, re-assign variables as desired. We do a simple average here. 
-
-        vid_length = 2*len(red)
-        new_red = [0] * vid_length
-        new_blue = [0] * vid_length
-        new_green = [0] * vid_length
-        for i in range(vid_length):
-            if i%2:
-                new_red[i] = red[i//2]
-                new_blue[i] = blue[i//2]
-                new_green[i] = green[i//2]
-            else:
-                new_red[i] = (red[i//2] + red[i//2 + 1]) * 0.5
-                new_blue[i] = (blue[i//2] + blue[i//2 + 1]) * 0.5
-                new_green[i] = (green[i//2] + green[i//2 + 1]) * 0.5
-        new_vid[r] = [ [new_red[i], new_blue[i], new_green[i]] for i in range(vid_length) ]
-    # print(new_vid)
-    return new_vid
 
 def linear_frames(all_pixel_data, kept, n):
-# make array for all frame numbers
-    x_vals = [i*(kept[1] - kept[0])/(n+1) for i in range((n+1)*(len(kept)-1) + 1)]
-    # construct video with splines
-    print("Make empty new video")
-    spline_video = new_vid(len(x_vals), all_pixel_data)
-    # all_spline_data = [ [ [] for pixel in row ] for row in all_pixel_data]
-    all_spline_data = np.zeros((len(all_pixel_data), len(all_pixel_data[0])))
-    print("Perform Interpolations")
-    for r in range(len(all_spline_data)):
-        for p in range(len(all_spline_data[0])):
-            # this function is in another file
-            r_vec = linear_interpolation(x_vals, n, xi_vec = kept, fi_vec = all_pixel_data[r,p,0])
-            g_vec = linear_interpolation(x_vals, n, xi_vec = kept, fi_vec = all_pixel_data[r,p,1])
-            b_vec = linear_interpolation(x_vals, n, xi_vec = kept, fi_vec = all_pixel_data[r,p,2])
-            for f in range(len(x_vals)):
-                spline_video[f,r,p] = [r_vec[f], g_vec[f], b_vec[f] ]
-    return spline_video
+    return interpolation_frames(all_pixel_data, kept, n, linear_interpolation)
 
+def lagrange_neville(x_vals, xi_vec, fi_vec):
+    points = list(zip(xi_vec, fi_vec))
+    Q_best = best_neville(points)
+    print("Constructed Q table")
+    return [Q_best(x) for x in x_vals]
+
+def run_interpolation(video, sparse_interval, interp_with, reconstruct_granularity = None):
+    video = Path(video)
+
+    output_file = Path('.') / 'numpy_vids' / f"{video.stem}_sparse={sparse_interval}_{interp_with.__name__}_n={reconstruct_granularity}.npy"
+
+    if output_file.exists():
+        print(f"corresponding `.npy` file {output_file.name} already exists")
+        return
+
+    demo = str(Path('.') / 'media' / video)
+    
+    sparse_vid, kept, _ = sparse(demo, sparse_interval)
+    # write_wonky_file("compressed_video.npy", sparse_vid)
+    all_pix_data = process_sparse_frames(sparse_vid)
+    # print("All Pixel Data", all_pix_data)
+    print(f"Reshaped sparse vid from {sparse_vid.shape} to {all_pix_data.shape}.")
+
+    # n = interval - 1 # ??
+    if reconstruct_granularity is None:
+        reconstruct_granularity = sparse_interval - 1
+    interp_vid = interpolation_frames(
+        all_pix_data, kept,
+        n = reconstruct_granularity, interpolation_function = interp_with)
+
+    write_wonky_file(str(output_file), interp_vid)
 
 
 if __name__ == '__main__':
-    sparse_vid, kept = run_demo()
-    print("made sparse vid, kept:")
-    # print("Sparse Video Dimensions: ", len(sparse_vid), len(sparse_vid[0]), len(sparse_vid[0][0]))
-    # # write_wonky_file("compressed_video.npy", sparse_vid)
-    all_pix_data = process_sparse_frames(sparse_vid)
-    # print("All Pixel Data", all_pix_data)
-    # print("Spline Video Dimensions: ", len(spline_vid), len(spline_vid[0]), len(spline_vid[0][0]))
-    # print(spline_vid[-1])
-    # print(sparse_vid[-1])
-
-
-    
-
-    # print(sparse_vid, kept)
-    print(kept)
-    n = 4
-    # spline_vid = interpolation_frames(all_pix_data, kept, n = n)
-    # linear_vid = linear_frames(all_pix_data, kept, n = n)
-    print("Linear Fit Video Data")
-    # print(spline_vi)
-
-    # write_wonky_file(str(Path('.') / 'numpy_vids' / f"keys_linear_n={n}.npy"), linear_vid)
+    run_interpolation(
+        'surfing1.gif',
+        10,
+        spline_interpolation,
+        # reconstruct_granularity = 10,
+    )
 

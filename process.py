@@ -12,6 +12,8 @@ def sparse(path: str, cut_proportion = 2):
     height = cap.get(cv2.CAP_PROP_FRAME_HEIGHT)
     frame_rate = cap.get(cv2.CAP_PROP_FPS)
 
+    print(f"Making sparse vid; original shape {(frame_count, height, width, 3)}.")
+
     # these come as floats for some reason
     # note: we want to round up, not round or truncate
     # that's weird to me, but you get an off-by-one error with n = 3 if this is `int(frame_count // cut_proportion), and same with n = 10 and `round(frame_count / cut_proportion)`
@@ -46,6 +48,7 @@ def sparse(path: str, cut_proportion = 2):
 
         frame_number += 1
 
+    print(f"Kept every {cut_proportion}; {len(kept_frames)} frames total; indices {kept_frames}.")
     return sparse_vid, kept_frames, frame_rate
 
 
@@ -58,19 +61,13 @@ def write_black_with_codec(codec, extension):
         writer.write(blank_frame)
     writer.release()
 
-
-
-def write_video(frames: np.ndarray, name: str, fps: float):
-    _, height, width, _ = frames.shape
-
-    codec = cv2.VideoWriter_fourcc(*'XVID') # maybe smth different?
-    writer = cv2.VideoWriter(name + '.avi', codec, fps, (height, width))
-
-    for frame in frames:
-        blank_frame = np.zeros_like(frame)
-        writer.write(blank_frame)
-
-    writer.release()
+def test_writing_video():
+    for codec in ('DIVX', 'XVID', 'MJPG', 'X264', 'WMV1', 'WMV2', 'MP4V', 'MPEG', 'H264', 'mp4v', 'mpv4'):
+        for ext in ('mp4', 'avi', 'mpg'):
+            try:
+                write_black_with_codec(codec, ext)
+            except Exception as e:
+                print(f"{codec=}, {ext=}, {e=}")
 
 
 def run_demo():
@@ -89,15 +86,6 @@ def run_demo():
     # redone_vid, _, _ = sparse(demo, 1)
 
     # print(redone_vid.shape)
-
-    # for codec in ('DIVX', 'XVID', 'MJPG', 'X264', 'WMV1', 'WMV2', 'MP4V', 'MPEG', 'H264', 'mp4v', 'mpv4'):
-    #     for ext in ('mp4', 'avi', 'mpg'):
-    #         try:
-    #             video_with_codec(codec, ext)
-    #         except Exception as e:
-    #             print(f"{codec=}, {ext=}, {e=}")
-
-    # write_black_with_codec('mpv4', 'mpg')
 
     interval = 5
     sparse_vid, kept, frame_rate = sparse(demo, interval)

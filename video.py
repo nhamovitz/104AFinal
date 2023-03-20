@@ -18,7 +18,7 @@ class Video:
                 self.info = metadata_from
                 print(f"with info {metadata_from}")
             if type(metadata_from) == type(self):
-                self.frame_count = metadata_from.frame_count
+                # self.frame_count = metadata_from.frame_count
                 self.frame_rate  = metadata_from.frame_rate
                 self.info        = metadata_from.info
 
@@ -83,14 +83,38 @@ class Video:
     @classmethod
     def abs_error(cls, vid1, vid2):
         # assert vid1.shape == vid2.shape
-        return np.abs(vid1.frames - vid2.frames)
+        err = np.abs(
+            np.subtract(
+                vid1.frames.astype(np.int16), vid2.frames.astype(np.int16)
+            ),
+        )
+        return err.astype(np.uint8)
 
     @classmethod
     def rel_error(cls, vid1, vid2):
         return cls.abs_error(vid1, vid2) / 255
 
+    def write_to_file(self, name: str):
+        _, height, width, _ = self.frames.shape
+
+        codec = cv2.VideoWriter_fourcc(*'XVID') # maybe smth different?
+        writer = cv2.VideoWriter(name + '.avi', codec, self.frame_rate, (height, width))
+
+        for frame in self.frames:
+            writer.write(frame)
+
+        writer.release()
+
+
 
 def analyze_against(vid: Video, func, description: str, play_variant = True):
+    """
+    find the error when applying `func` to the frames of `vid`.
+    vid: input video
+    func: function accepting np.array with shape (length, height, width, 3)
+    description: of what transformation func will perform
+    play_variant: if True, `analyze_against` will play the transformed video and the "absolute error" video. defaults to True
+    """
     frames = vid.frames.copy()
     new_frames = func(frames)
     new_vid = Video(new_frames, metadata_from = vid)
@@ -101,7 +125,7 @@ def analyze_against(vid: Video, func, description: str, play_variant = True):
             new_vid.info = description
 
     if play_variant:
-        new_vid.play_video(fast=True)
+        new_vid.play_video(fast=False)
 
     print(f"Error analysis for variant {description}.")
     abs_error = Video.abs_error(vid, new_vid)
@@ -113,6 +137,21 @@ def analyze_against(vid: Video, func, description: str, play_variant = True):
         rel_error.play_video()
 
 
+def demo1(vid):
+    """play video, and then play and play error of: reversed, upside down, flipped x-y, color channels rotated, equal length of black"""
+    
+    vid.play_video()
+
+    def flip_on(axis):
+        def f(frames):
+            return np.flip(frames, axis).copy()
+        return f
+
+    analyze_against(vid, flip_on(0), "Reverse")
+    analyze_against(vid, flip_on(1), "upside_down")
+    analyze_against(vid, flip_on(2), "sideways")
+    analyze_against(vid, lambda frames: np.roll(frames, 1, 3).copy(), "colors")
+    analyze_against(vid, lambda frames: np.zeros_like(frames), "black")
 
 
     
@@ -121,58 +160,49 @@ if __name__ == '__main__':
 
     from pathlib import Path
     from process import run_demo
-
-    demo_path = Path('.') / 'media' / 'keys.mp4'
-    vid = Video.from_file(str(demo_path))
-    vid.play_video()
-
-    # orig_frames = vid.frames
-    # new_shape = (146, 240, 424, 3)
-    # new_frames = np.zeros(new_shape)
-    # new_frames = orig_frames[0:144 + 1, ...]
-    # vid = Video(new_frames, "first 146 frames of vid")
-    
-
-
-    # def flip_on(axis):
-    #     def f(frames):
-    #         return np.flip(frames, axis).copy()
-    #     return f
-
-    # analyze_against(vid, flip_on(0), "Reverse")
-    # analyze_against(vid, flip_on(1), "upside_down")
-    # analyze_against(vid, flip_on(2), "sideways")
-    # analyze_against(vid, lambda frames: np.roll(frames, 1, 3).copy(), "colors")
-    # analyze_against(vid, lambda frames: np.zeros_like(frames), "black")
-
-    from process import run_demo
-    import video
+    import read_numpy_array_files
     import create_vids
 
 
+    demo_path = Path('.') / 'media' / 'keys.mp4'
+    vid = Video.from_file(str(demo_path))
+    # vid.frame_rate *= 0.7
+    # mini_sun, sun = create_vids.sun()
+    # vid = Video(sun, "`sun`")
+    # vid.frame_rate = 1.1
+    # print(vid.frames)
+    vid.play_video()
+
+    # print(mini_sun)
+    # print(np.flip(mini_sun, 1))
+    # print(np.abs(mini_sun - np.flip(mini_sun, 1)))
+
+    # while True:
+    demo1(vid)
+    # exit()
+
+    # lagrange = read_numpy_array_files.read_wonky_file(str(Path('.') / 'numpy_vids' /'sun_lagrange_neville_n=10.npy'))
+    # lagrange = Video(lagrange, "lagrange")
+    # lagrange.frame_rate = 4
+    # lagrange.play_video()
+    
     sparse, _ = run_demo()
     # sparse = create_vids.simple()
-    sparse = video.Video(sparse, "sparse version")
+    sparse = Video(sparse, "sparse version")
     sparse.frame_rate = 2
     # print(sparse.frames[-1])
     sparse.play_video()
 
-    import read_numpy_array_files
 
     spl = read_numpy_array_files.read_wonky_file(str(Path('.') / 'numpy_vids' / ('keys_' + 'spline' + '_n=4.npy')))
-
-    spl = video.Video(spl, "(spline) interpolation")
+    spl = Video(spl, "(spline) interpolation")
     spl.frame_rate = vid.frame_rate
     # print(interped.frames[-1])
     spl.play_video()
 
-    cut_vid_shape = spl.frames.shape
-    cut_vid = np.zeros(cut_vid_shape)
-
-    # cut_vid = np.delete(vid.frames, [146, 147, 148, 149], 3)
+    cut_vid = np.zeros(spl.frames.shape)
     cut_vid = vid.frames[0:145 + 1, ...]
     cut_vid = Video(cut_vid, "four frames gone")
-
 
 
     print(f"Error analysis for spline.")
@@ -189,13 +219,10 @@ if __name__ == '__main__':
 
 
     lin = read_numpy_array_files.read_wonky_file(str(Path('.') / 'numpy_vids' / ('keys_' + 'linear' + '_n=4.npy')))
-
-    lin = video.Video(lin, "(lin) interpolation")
+    lin = Video(lin, "(lin) interpolation")
     lin.frame_rate = vid.frame_rate
     # print(interped.frames[-1])
-
     lin.play_video()
-
     print(f"Error analysis for lin.")
     abs_error = Video.abs_error(cut_vid, lin)
     print(f"Mean absolute error: {np.mean(abs_error)}")
