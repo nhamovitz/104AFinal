@@ -83,7 +83,12 @@ class Video:
     @classmethod
     def abs_error(cls, vid1, vid2):
         # assert vid1.shape == vid2.shape
-        return np.abs(vid1.frames - vid2.frames)
+        err = np.abs(
+            np.subtract(
+                vid1.frames.astype(np.int16), vid2.frames.astype(np.int16)
+            ),
+        )
+        return err.astype(np.uint8)
 
     @classmethod
     def rel_error(cls, vid1, vid2):
@@ -124,7 +129,6 @@ def analyze_against(vid: Video, func, description: str, play_variant = True):
 
     print(f"Error analysis for variant {description}.")
     abs_error = Video.abs_error(vid, new_vid)
-    print(frames, new_frames, abs_error)
     print(f"Mean absolute error: {np.mean(abs_error)}")
     print(f"Mean relative error: {np.mean(Video.rel_error(vid, new_vid))}")
     if play_variant:
@@ -143,10 +147,10 @@ def demo1(vid):
             return np.flip(frames, axis).copy()
         return f
 
-    # analyze_against(vid, flip_on(0), "Reverse")
+    analyze_against(vid, flip_on(0), "Reverse")
     analyze_against(vid, flip_on(1), "upside_down")
-    # analyze_against(vid, flip_on(2), "sideways")
-    # analyze_against(vid, lambda frames: np.roll(frames, 1, 3).copy(), "colors")
+    analyze_against(vid, flip_on(2), "sideways")
+    analyze_against(vid, lambda frames: np.roll(frames, 1, 3).copy(), "colors")
     analyze_against(vid, lambda frames: np.zeros_like(frames), "black")
 
 
@@ -160,20 +164,27 @@ if __name__ == '__main__':
     import create_vids
 
 
-    demo_path = Path('.') / 'media' / 'sun.mp4'
-    # vid = Video.from_file(str(demo_path))
+    demo_path = Path('.') / 'media' / 'keys.mp4'
+    vid = Video.from_file(str(demo_path))
     # vid.frame_rate *= 0.7
-    vid = Video(create_vids.sun(), "`sun`")
-    vid.frame_rate = 1.1
+    # mini_sun, sun = create_vids.sun()
+    # vid = Video(sun, "`sun`")
+    # vid.frame_rate = 1.1
     # print(vid.frames)
     # vid.play_video()
-    while True:
-        demo1(vid)
-    exit()
-    lagrange = read_numpy_array_files.read_wonky_file(str(Path('.') / 'numpy_vids' /'sun_lagrange_neville_n=10.npy'))
-    lagrange = Video(lagrange, "lagrange")
-    lagrange.frame_rate = 4
-    lagrange.play_video()
+
+    # print(mini_sun)
+    # print(np.flip(mini_sun, 1))
+    # print(np.abs(mini_sun - np.flip(mini_sun, 1)))
+
+    # while True:
+    #     demo1(vid)
+    # exit()
+
+    # lagrange = read_numpy_array_files.read_wonky_file(str(Path('.') / 'numpy_vids' /'sun_lagrange_neville_n=10.npy'))
+    # lagrange = Video(lagrange, "lagrange")
+    # lagrange.frame_rate = 4
+    # lagrange.play_video()
     
     sparse, _ = run_demo()
     # sparse = create_vids.simple()

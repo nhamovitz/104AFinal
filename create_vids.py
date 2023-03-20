@@ -36,11 +36,11 @@ def sun():
     yellow = [60, 248, 250]
     green = [29, 135, 34]
 
-    frames = np.array(
+    small_frames = np.array(
         [
          [
           [light_blue]*5,
-          [yellow, light_blue,light_blue,light_blue, yellow,],
+          [yellow, light_blue, light_blue, light_blue, light_blue,],
           [green] * 5
          ],
          [
@@ -83,12 +83,34 @@ def sun():
     frames[4, 100:200, 400:500, :] = np.broadcast_to(yellow, (1, 100, 100, 3))
     
     # assert frames.shape == ((5, 3, 5, 3))
-    return frames
+    return (small_frames, frames)
+
+def investigating_error_vis():
+    minisun = sun()[0]
+    flipped = np.flip(minisun, 1)
+    minisun = minisun[1]
+    flipped = flipped[1]
+    # abs_error = np.abs(
+    #         np.subtract(minisun, flipped, dtype = np.int16),
+    #         , casting = 'unsafe'
+    #     )
+    diff = np.subtract(
+                minisun.astype(np.int16), flipped.astype(np.int16)
+            )
+    abs_error = np.abs(diff,)
+    print(abs_error.shape)
+    abs_error = abs_error.astype(np.uint8)
+    print(abs_error.shape)
+    print(minisun)
+    print(flipped)
+    print(diff)
+    print(abs_error)
 
 if __name__ == '__main__':
+    investigating_error_vis()
+
     # turns out opencv reads each pixel as
     # b, g, r
-
     red = np.array([255, 0, 0], dtype=np.uint8)
     red = np.tile(red, 400**2).reshape((400, 400, 3))
     while True:
