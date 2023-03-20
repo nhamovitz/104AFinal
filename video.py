@@ -80,6 +80,18 @@ class Video:
     
         cv2.destroyAllWindows()
 
+    def show_frame(self, frame_number):
+        assert frame_number < self.frames.shape[0]
+        while True:
+            cv2.imshow(
+                f"{self.info}, frame {frame_number}",
+                self.frames[frame_number]
+            )
+            if cv2.waitKey(50) & 0xFF == ord('q'):
+                break
+        cv2.destroyAllWindows()
+
+
     @classmethod
     def abs_error(cls, vid1, vid2):
         # assert vid1.shape == vid2.shape
@@ -167,18 +179,18 @@ if __name__ == '__main__':
     demo_path = Path('.') / 'media' / 'keys.mp4'
     vid = Video.from_file(str(demo_path))
     # vid.frame_rate *= 0.7
-    # mini_sun, sun = create_vids.sun()
+    # # mini_sun, sun = create_vids.sun()
     # vid = Video(sun, "`sun`")
     # vid.frame_rate = 1.1
-    # print(vid.frames)
-    vid.play_video()
+    # print(mini_sun)
+    # vid.play_video()
 
     # print(mini_sun)
     # print(np.flip(mini_sun, 1))
     # print(np.abs(mini_sun - np.flip(mini_sun, 1)))
 
     # while True:
-    demo1(vid)
+    # demo1(vid)
     # exit()
 
     # lagrange = read_numpy_array_files.read_wonky_file(str(Path('.') / 'numpy_vids' /'sun_lagrange_neville_n=10.npy'))
@@ -186,23 +198,26 @@ if __name__ == '__main__':
     # lagrange.frame_rate = 4
     # lagrange.play_video()
     
-    sparse, _ = run_demo()
-    # sparse = create_vids.simple()
-    sparse = Video(sparse, "sparse version")
-    sparse.frame_rate = 2
-    # print(sparse.frames[-1])
-    sparse.play_video()
+    # sparse, _ = run_demo()
+    # # sparse = create_vids.simple()
+    # sparse = Video(sparse, "sparse version")
+    # sparse.frame_rate = 2
+    # # print(sparse.frames[-1])
+    # sparse.play_video()
 
 
-    spl = read_numpy_array_files.read_wonky_file(str(Path('.') / 'numpy_vids' / ('keys_' + 'spline' + '_n=4.npy')))
+    spl = read_numpy_array_files.read_wonky_file(
+        str(Path('.') / 'numpy_vids' / ('keys_' + 'spline' + '_n=4.npy'))
+        # "numpy_vids\\surfing1_sparse=5_spline_interpolation_n=None.npy"
+    )
     spl = Video(spl, "(spline) interpolation")
     spl.frame_rate = vid.frame_rate
     # print(interped.frames[-1])
     spl.play_video()
 
     cut_vid = np.zeros(spl.frames.shape)
-    cut_vid = vid.frames[0:145 + 1, ...]
-    cut_vid = Video(cut_vid, "four frames gone")
+    cut_vid = vid.frames[0:cut_vid.shape[0], ...]
+    cut_vid = Video(cut_vid, "two frames gone")
 
 
     print(f"Error analysis for spline.")
@@ -210,15 +225,18 @@ if __name__ == '__main__':
     print(f"Mean absolute error: {np.mean(abs_error)}")
     print(f"Mean relative error: {np.mean(Video.rel_error(cut_vid, spl))}")
     spl_err = Video(abs_error)
-    spl_err.frame_rate = vid.frame_rate
+    spl_err.frame_rate = vid.frame_rate #* 0.15
     spl_err.info = "spl_err"
     spl_err.play_video()
 
 
 
 
+    lin = read_numpy_array_files.read_wonky_file(
+        str(Path('.') / 'numpy_vids' / ('keys_' + 'linear' + '_n=4.npy'))
+        # "numpy_vids\\surfing1_sparse=5_linear_interpolation_n=None.npy"
 
-    lin = read_numpy_array_files.read_wonky_file(str(Path('.') / 'numpy_vids' / ('keys_' + 'linear' + '_n=4.npy')))
+        )
     lin = Video(lin, "(lin) interpolation")
     lin.frame_rate = vid.frame_rate
     # print(interped.frames[-1])
@@ -228,8 +246,29 @@ if __name__ == '__main__':
     print(f"Mean absolute error: {np.mean(abs_error)}")
     print(f"Mean relative error: {np.mean(Video.rel_error(cut_vid, lin))}")
     lin_err = Video(abs_error)
-    lin_err.frame_rate = vid.frame_rate
+    lin_err.frame_rate = vid.frame_rate #* 0.15
     lin_err.info = "lin err"
     lin_err.play_video()
+
+
+    print(f"Difference between splines")
+    abs_error = Video.abs_error(spl, lin)
+    print(f"Mean absolute error: {np.mean(abs_error)}")
+    print(f"Mean relative error: {np.mean(Video.rel_error(cut_vid, lin))}")
+    diff = Video(abs_error)
+    diff.frame_rate = vid.frame_rate
+    diff.info = "spline / linear difference"
+    diff.play_video()
+
+
+    spl_err.show_frame(43)
+    lin_err.show_frame(43)
+    diff.show_frame(43)
+
+
+    disagree = np.count_nonzero(diff.frames)
+    print(f"{disagree=}, {spl_err.frames.size=}")
+    print(f"ratio = {disagree / spl_err.frames.size}")
+
 
 

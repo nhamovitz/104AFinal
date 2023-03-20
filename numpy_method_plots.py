@@ -6,6 +6,7 @@ import cv2
 from pathlib import Path
 
 from read_numpy_array_files import read_wonky_file
+import create_vids
 
 def plot_a_pixel(frames_array, row, column, title="Plot of Spline Interpolation"):
     """
@@ -44,11 +45,14 @@ def track_color():
     pass
 
 def file_to_plot(npy_file, x_frac=0.5, y_frac=0.5, method="spline"):
+    arr = read_wonky_file(npy_file)
+    frames_to_plot(arr, x_frac, y_frac, method)
+
+
+def frames_to_plot(arr, x_frac=0.5, y_frac=0.5, method="spline"):
     """
     Input: x fraction and y fraction of point along image
     """
-    arr = read_wonky_file(npy_file)
-
     row = int(y_frac*len(arr[0]))
     column = int(x_frac*len(arr[0][0]))
 
@@ -63,5 +67,6 @@ if __name__ == "__main__":
     # Spline Plot
     path = str(Path('.') / 'numpy_vids' / ('keys_' + 'spline' + '_n=4.npy'))
     file_to_plot(path)
+    frames_to_plot(create_vids.sun()[0], y_frac=0.1)
 
 

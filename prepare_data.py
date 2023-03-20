@@ -42,7 +42,7 @@ def new_vid(n, frame):
     return np.zeros((n, len(frame), len(frame[0]),3), dtype=np.uint8)
 
 
-def interpolation_frames(all_pixel_data, kept, n, interpolation_function = spline_interpolation):
+def interpolation_frames(all_pixel_data, kept, n, interpolation_function = spline_interpolation, frame_count = None):
     """
     pixel data: returned from process_sparse_frames
         row:
@@ -53,7 +53,11 @@ def interpolation_frames(all_pixel_data, kept, n, interpolation_function = splin
     n: number of total frames we want
     """
     # make array for all frame numbers
+    # if frame_count is None:
     x_vals = [i*(kept[1] - kept[0])/(n+1) for i in range((n+1)*(len(kept)-1) + 1)]
+    # else:
+    #     x_vals = [i for i in range(frame_count)]
+    print(x_vals)
     # construct video with splines
     print("Make empty new video")
     spline_video = new_vid(len(x_vals), all_pixel_data)
@@ -64,9 +68,9 @@ def interpolation_frames(all_pixel_data, kept, n, interpolation_function = splin
         for p in range(len(all_spline_data[0])):
             # print(f"{(r, p)=}")
             # this function is in another file
-            r_vec = interpolation_function(x_vals, xi_vec = kept, fi_vec = all_pixel_data[r,p,0])
-            g_vec = interpolation_function(x_vals, xi_vec = kept, fi_vec = all_pixel_data[r,p,1])
-            b_vec = interpolation_function(x_vals, xi_vec = kept, fi_vec = all_pixel_data[r,p,2])
+            r_vec = interpolation_function(x_vals, xi_vec = kept, fi_vec = all_pixel_data[r,p,0].astype(np.int16))
+            g_vec = interpolation_function(x_vals, xi_vec = kept, fi_vec = all_pixel_data[r,p,1].astype(np.int16))
+            b_vec = interpolation_function(x_vals, xi_vec = kept, fi_vec = all_pixel_data[r,p,2].astype(np.int16))
             for f in range(len(x_vals)):
                 spline_video[f,r,p] = [r_vec[f], g_vec[f], b_vec[f]]
     return spline_video
@@ -111,8 +115,8 @@ def run_interpolation(video, sparse_interval, interp_with, reconstruct_granulari
 if __name__ == '__main__':
     run_interpolation(
         'surfing1.gif',
-        10,
-        spline_interpolation,
+        5,
+        linear_interpolation,
         # reconstruct_granularity = 10,
     )
 
