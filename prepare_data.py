@@ -62,7 +62,7 @@ def interpolation_frames(all_pixel_data, kept, n, interpolation_function = splin
     print("Perform Interpolations")
     for r in range(len(all_spline_data)):
         for p in range(len(all_spline_data[0])):
-            print(f"{(r, p)=}")
+            # print(f"{(r, p)=}")
             # this function is in another file
             r_vec = interpolation_function(x_vals, xi_vec = kept, fi_vec = all_pixel_data[r,p,0])
             g_vec = interpolation_function(x_vals, xi_vec = kept, fi_vec = all_pixel_data[r,p,1])
@@ -101,7 +101,6 @@ def run_interpolation(video, sparse_interval, interp_with, reconstruct_granulari
     # n = interval - 1 # ??
     if reconstruct_granularity is None:
         reconstruct_granularity = sparse_interval - 1
-    interp_with = lagrange_neville
     interp_vid = interpolation_frames(
         all_pix_data, kept,
         n = reconstruct_granularity, interpolation_function = interp_with)
@@ -111,9 +110,9 @@ def run_interpolation(video, sparse_interval, interp_with, reconstruct_granulari
 
 if __name__ == '__main__':
     run_interpolation(
-        'sun.mp4',
-        30,
-        lagrange_neville,
-        reconstruct_granularity = 10,
+        'surfing1.gif',
+        10,
+        spline_interpolation,
+        # reconstruct_granularity = 10,
     )
 

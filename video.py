@@ -171,14 +171,14 @@ if __name__ == '__main__':
     # vid = Video(sun, "`sun`")
     # vid.frame_rate = 1.1
     # print(vid.frames)
-    # vid.play_video()
+    vid.play_video()
 
     # print(mini_sun)
     # print(np.flip(mini_sun, 1))
     # print(np.abs(mini_sun - np.flip(mini_sun, 1)))
 
     # while True:
-    #     demo1(vid)
+    demo1(vid)
     # exit()
 
     # lagrange = read_numpy_array_files.read_wonky_file(str(Path('.') / 'numpy_vids' /'sun_lagrange_neville_n=10.npy'))
