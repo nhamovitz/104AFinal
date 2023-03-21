@@ -1,0 +1,34 @@
+Running demo...
+Creating Video object from file at media\keys.mp4
+frame_count=150, width=424, height=240, frame_rate=29.941912689382598
+Creating video object from ndarray
+self.frames.shape=(150, 240, 424, 3)
+Creating video object from ndarray
+self.frames.shape=(146, 240, 424, 3)
+with info (spline) interpolation
+Creating video object from ndarray
+self.frames.shape=(146, 240, 424, 3)
+with info two frames gone
+Error analysis for spline.
+Mean absolute error: 3.92997593944746
+Mean relative error: 0.01541167035077435
+Mean relative error: 0.0359431405784277
+Creating video object from ndarray
+self.frames.shape=(146, 240, 424, 3)
+Creating video object from ndarray
+self.frames.shape=(146, 240, 424, 3)
+with info (lin) interpolation
+Error analysis for lin.
+Mean absolute error: 3.4042181128126705
+Mean relative error: 0.013349874952206573
+Mean relative error: 0.03289491431158345
+Creating video object from ndarray
+self.frames.shape=(146, 240, 424, 3)
+Difference between splines
+Mean absolute error: 1.1399583988469602
+Mean relative error: 0.0044704250935174855
+Mean relative error: 0.009840167934067431
+Creating video object from ndarray
+self.frames.shape=(146, 240, 424, 3)
+disagree=17512510, spl_err.frames.size=44570880
+ratio = 0.3929137140662244

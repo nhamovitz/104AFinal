@@ -103,8 +103,17 @@ class Video:
         return err.astype(np.uint8)
 
     @classmethod
-    def rel_error(cls, vid1, vid2):
+    def rel_error1(cls, vid1, vid2):
+        """relative error, dividing abs by 255"""
         return cls.abs_error(vid1, vid2) / 255
+
+    @classmethod
+    def rel_error2(cls, reference, other):
+        """relative error, dividing abs by reference val"""
+        return np.divide(
+            cls.abs_error(reference, other).astype(np.float64),
+            reference.frames.astype(np.float64)
+        )
 
     def write_to_file(self, name: str):
         _, height, width, _ = self.frames.shape
@@ -142,7 +151,8 @@ def analyze_against(vid: Video, func, description: str, play_variant = True):
     print(f"Error analysis for variant {description}.")
     abs_error = Video.abs_error(vid, new_vid)
     print(f"Mean absolute error: {np.mean(abs_error)}")
-    print(f"Mean relative error: {np.mean(Video.rel_error(vid, new_vid))}")
+    print(f"Mean relative error: {np.mean(Video.rel_error1(vid, new_vid))}")
+    print(f"Mean relative error: {np.mean(Video.rel_error2(vid, new_vid))}")
     if play_variant:
         rel_error = Video(abs_error, metadata_from = new_vid)
         rel_error.info += ", abs error"
@@ -176,14 +186,14 @@ if __name__ == '__main__':
     import create_vids
 
 
-    demo_path = Path('.') / 'media' / 'keys.mp4'
+    demo_path = Path('.') / 'media' / 'surfing1.gif'
     vid = Video.from_file(str(demo_path))
     # vid.frame_rate *= 0.7
     # # mini_sun, sun = create_vids.sun()
     # vid = Video(sun, "`sun`")
     # vid.frame_rate = 1.1
     # print(mini_sun)
-    # vid.play_video()
+    vid.play_video()
 
     # print(mini_sun)
     # print(np.flip(mini_sun, 1))
@@ -205,10 +215,14 @@ if __name__ == '__main__':
     # # print(sparse.frames[-1])
     # sparse.play_video()
 
+    # demo_path = Path('.') / 'media' / 'keys.mp4'
+    # vid = Video.from_file(str(demo_path))
+
+    # vid.play_video()
 
     spl = read_numpy_array_files.read_wonky_file(
-        str(Path('.') / 'numpy_vids' / ('keys_' + 'spline' + '_n=4.npy'))
-        # "numpy_vids\\surfing1_sparse=5_spline_interpolation_n=None.npy"
+        # str(Path('.') / 'numpy_vids' / ('keys_' + 'spline' + '_n=4.npy'))
+        "numpy_vids\\surfing1_sparse=5_spline_interpolation_n=None.npy"
     )
     spl = Video(spl, "(spline) interpolation")
     spl.frame_rate = vid.frame_rate
@@ -223,7 +237,8 @@ if __name__ == '__main__':
     print(f"Error analysis for spline.")
     abs_error = Video.abs_error(cut_vid, spl)
     print(f"Mean absolute error: {np.mean(abs_error)}")
-    print(f"Mean relative error: {np.mean(Video.rel_error(cut_vid, spl))}")
+    print(f"Mean relative error: {np.mean(Video.rel_error1(cut_vid, spl))}")
+    print(f"Mean relative error: {np.mean(Video.rel_error2(cut_vid, spl))}")
     spl_err = Video(abs_error)
     spl_err.frame_rate = vid.frame_rate #* 0.15
     spl_err.info = "spl_err"
@@ -233,10 +248,9 @@ if __name__ == '__main__':
 
 
     lin = read_numpy_array_files.read_wonky_file(
-        str(Path('.') / 'numpy_vids' / ('keys_' + 'linear' + '_n=4.npy'))
-        # "numpy_vids\\surfing1_sparse=5_linear_interpolation_n=None.npy"
-
-        )
+        # str(Path('.') / 'numpy_vids' / ('keys_' + 'linear' + '_n=4.npy'))
+        "numpy_vids\\surfing1_sparse=5_linear_interpolation_n=None.npy"
+    )
     lin = Video(lin, "(lin) interpolation")
     lin.frame_rate = vid.frame_rate
     # print(interped.frames[-1])
@@ -244,7 +258,8 @@ if __name__ == '__main__':
     print(f"Error analysis for lin.")
     abs_error = Video.abs_error(cut_vid, lin)
     print(f"Mean absolute error: {np.mean(abs_error)}")
-    print(f"Mean relative error: {np.mean(Video.rel_error(cut_vid, lin))}")
+    print(f"Mean relative error: {np.mean(Video.rel_error1(cut_vid, lin))}")
+    print(f"Mean relative error: {np.mean(Video.rel_error2(cut_vid, lin))}")
     lin_err = Video(abs_error)
     lin_err.frame_rate = vid.frame_rate #* 0.15
     lin_err.info = "lin err"
@@ -254,21 +269,56 @@ if __name__ == '__main__':
     print(f"Difference between splines")
     abs_error = Video.abs_error(spl, lin)
     print(f"Mean absolute error: {np.mean(abs_error)}")
-    print(f"Mean relative error: {np.mean(Video.rel_error(cut_vid, lin))}")
+    print(f"Mean relative error: {np.mean(Video.rel_error1(spl, lin))}")
+    print(f"Mean relative error: {np.mean(Video.rel_error2(spl, lin))}")
     diff = Video(abs_error)
     diff.frame_rate = vid.frame_rate
     diff.info = "spline / linear difference"
     diff.play_video()
 
-
-    spl_err.show_frame(43)
-    lin_err.show_frame(43)
-    diff.show_frame(43)
-
-
     disagree = np.count_nonzero(diff.frames)
     print(f"{disagree=}, {spl_err.frames.size=}")
     print(f"ratio = {disagree / spl_err.frames.size}")
+
+    # exit()
+
+    while True:
+        vid.show_frame(    21)
+        spl.show_frame(    21)
+        spl_err.show_frame(21)
+        lin.show_frame(    21)
+        lin_err.show_frame(21)
+        diff.show_frame(   21)
+
+        vid.show_frame(    83)
+        spl.show_frame(    83)
+        spl_err.show_frame(83)
+        lin.show_frame(    83)
+        lin_err.show_frame(83)
+        diff.show_frame(   83)
+
+        vid.show_frame(    102)
+        spl.show_frame(    102)
+        spl_err.show_frame(102)
+        lin.show_frame(    102)
+        lin_err.show_frame(102)
+        diff.show_frame(   102)
+
+        # vid.show_frame(21)
+        # spl.show_frame(21)
+        # spl_err.show_frame(21)
+        # lin.show_frame(21)
+        # lin_err.show_frame(21)
+        # diff.show_frame(   21)
+
+        # vid.show_frame(33)
+        # spl.show_frame(33)
+        # spl_err.show_frame(33)
+        # lin.show_frame(33)
+        # lin_err.show_frame(33)
+        # diff.show_frame(   33)
+
+
 
 
 

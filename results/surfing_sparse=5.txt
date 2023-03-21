@@ -1,0 +1,39 @@
+Running demo...
+Creating Video object from file at media\surfing1.gif
+[gif @ 000001bb44daa940] invalid block label
+frame_count=38, width=480, height=324, frame_rate=14.916666666666666
+Creating video object from ndarray
+self.frames.shape=(38, 324, 480, 3)
+Creating video object from ndarray
+self.frames.shape=(36, 324, 480, 3)
+with info (spline) interpolation
+Creating video object from ndarray
+self.frames.shape=(36, 324, 480, 3)
+with info two frames gone
+Error analysis for spline.
+Mean absolute error: 14.850262560013718
+Mean relative error: 0.0582363237647597
+G:\My Drive\General\no emojis rip\104AFinal\104AFinal\video.py:113: RuntimeWarning: divide by zero encountered in divide
+  return np.divide(
+G:\My Drive\General\no emojis rip\104AFinal\104AFinal\video.py:113: RuntimeWarning: invalid value encountered in divide
+  return np.divide(
+Mean relative error: nan
+Creating video object from ndarray
+self.frames.shape=(36, 324, 480, 3)
+Creating video object from ndarray
+self.frames.shape=(36, 324, 480, 3)
+with info (lin) interpolation
+Error analysis for lin.
+Mean absolute error: 13.973541869093888
+Mean relative error: 0.05479820340821126
+Mean relative error: nan
+Creating video object from ndarray
+self.frames.shape=(36, 324, 480, 3)
+Difference between splines
+Mean absolute error: 2.981687421410608
+Mean relative error: 0.011692891848669045
+Mean relative error: nan
+Creating video object from ndarray
+self.frames.shape=(36, 324, 480, 3)
+disagree=10805377, spl_err.frames.size=16796160
+ratio = 0.6433242479233349
