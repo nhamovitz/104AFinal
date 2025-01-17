@@ -1,2 +1,6 @@
 # 104AFinal
 Reinventing inter-frame video compression using interpolation. UCSB Math 104A Final Project. See [the technical report](Final%20Project%20Report.pdf) for more details. (Note: work on the project was performed with Rianna Alers and Emma Opper; the report only has my name because we all wrote separate reports.)
+
+---
+
+As our final project for a Numerical Analysis class, myself and two others invented a (rather bad) video compression algorithm using interpolation techniques we had learned in class. We used Python with the OpenCV library to process videos, and numpy to do a lot of matrix multiplication. I had the most programming experience, so I guided the others through using git and setting up a python development environment. I also did a lot of the actual coding work, although we all shared. We decided to use linear interpolation and cubic splines, and removed 4 out of every 5 frames from the video. This produced results which were totally recognizable, although the number of interpolation artifacts was unacceptably high for real use. We found that the two types of splines performed similarly. Error (calculated per pixel per color channel) averaged 2% for one sample and 6% for another. Our code and results are available at https://github.com/nhamovitz/104AFinal.
